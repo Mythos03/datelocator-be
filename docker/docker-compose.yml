@@ -1,3 +1,5 @@
+name: datelocator
+
 services:
   postgres:
     image: postgres:latest

@@ -27,7 +27,7 @@ class UserController(
         return ResponseEntity.ok(userService.getAllUsers())
     }
 
-    @GetMapping("/email")
+    @GetMapping("/username")
     fun findByEmail(@RequestParam username: String): ResponseEntity<User> {
         val user = userService.findByUsername(username)
         return if (user != null) ResponseEntity.ok(user)
