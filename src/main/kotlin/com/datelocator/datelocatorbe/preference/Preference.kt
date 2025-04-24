@@ -1,6 +1,7 @@
 package com.datelocator.datelocatorbe.preference
 
 import com.datelocator.datelocatorbe.user.User
+import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.persistence.*
 import java.util.UUID
 
@@ -12,7 +13,12 @@ data class Preference(
 
     val name: String,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    val user: User
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_preferences",
+        joinColumns = [JoinColumn(name = "preference_id")],
+        inverseJoinColumns = [JoinColumn(name = "user_id")]
+    )
+    @Schema(hidden = true)
+    val users: Set<User> = emptySet()
 )

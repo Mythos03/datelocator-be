@@ -18,8 +18,8 @@ data class User(
 
     val gender: Genders? = null,
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val preferences: List<Preference> = emptyList(),
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    val preferences: Set<Preference> = emptySet(),
 
     val age: Int? = null,
 
