@@ -13,7 +13,7 @@ class PreferenceController(
     private val preferenceService: PreferenceService
 ) {
     @GetMapping
-    fun getAllPreferences(): ResponseEntity<List<Preference>> {
+    fun getAllPreferences(): ResponseEntity<List<PreferenceResponseDto>> {
         return ResponseEntity.ok(preferenceService.getAllPreferences())
     }
 

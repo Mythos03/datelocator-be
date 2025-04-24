@@ -11,8 +11,9 @@ class PreferenceService(
     private val userRepository: UserRepository,
 ) {
 
-    fun getAllPreferences(): List<Preference> {
+    fun getAllPreferences(): List<PreferenceResponseDto> {
         return preferenceRepository.findAll()
+            .map { PreferenceMapper.toResponseDto(it) }
     }
 
     fun createPreference(preferenceRequestDto: PreferenceRequestDto): Preference {
