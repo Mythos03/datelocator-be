@@ -7,4 +7,5 @@ data class UserResponseDto (
     val lastName: String? = null,
     val gender: Genders?,
     val age: Int? = null,
+    val preferences: Set<String> = emptySet(),
 )

@@ -9,6 +9,7 @@ object UserMapper {
             lastName = user.lastName,
             gender = user.gender,
             age = user.age,
+            preferences = user.preferences.map { it.name }.toSet()
         )
     }
 }
