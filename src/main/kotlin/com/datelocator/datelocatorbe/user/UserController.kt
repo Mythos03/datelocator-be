@@ -23,7 +23,7 @@ class UserController(
     }
 
     @GetMapping
-    fun getAllUsers(): ResponseEntity<List<User>> {
+    fun getAllUsers(): ResponseEntity<List<UserResponseDto>> {
         return ResponseEntity.ok(userService.getAllUsers())
     }
 
