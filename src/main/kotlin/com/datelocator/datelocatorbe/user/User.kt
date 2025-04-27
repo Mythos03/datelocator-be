@@ -24,4 +24,14 @@ data class User(
 
     val age: Int? = null,
     val createdAt: LocalDateTime = LocalDateTime.now()
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is User) return false
+        return firebaseUid == other.firebaseUid
+    }
+
+    override fun hashCode(): Int {
+        return firebaseUid.hashCode()
+    }
+}

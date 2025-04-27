@@ -3,9 +3,11 @@ package com.datelocator.datelocatorbe.user
 import com.datelocator.datelocatorbe.preference.Preference
 import com.datelocator.datelocatorbe.preference.PreferenceRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Service
+@Transactional
 class UserService(
     private val userRepository: UserRepository,
     private val preferenceRepository: PreferenceRepository
