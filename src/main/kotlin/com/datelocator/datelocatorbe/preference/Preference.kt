@@ -10,15 +10,9 @@ import java.util.UUID
 data class Preference(
     @Id
     val id: UUID = UUID.randomUUID(),
-
     val name: String,
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "user_preferences",
-        joinColumns = [JoinColumn(name = "preference_id")],
-        inverseJoinColumns = [JoinColumn(name = "user_id")]
-    )
+    @ManyToMany(mappedBy = "preferences")
     @Schema(hidden = true)
-    val users: Set<User> = emptySet()
+    val users: MutableSet<User> = mutableSetOf()
 )

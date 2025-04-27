@@ -1,5 +1,6 @@
 package com.datelocator.datelocatorbe.user
 
+import com.datelocator.datelocatorbe.preference.Preference
 import com.datelocator.datelocatorbe.preference.PreferenceRepository
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -11,8 +12,8 @@ class UserService(
 ) {
 
     fun getUserById(uid: String): UserResponseDto? {
-        return userRepository.findById(uid).orElse(null)
-            ?.let { UserMapper.toResponseDto(it) }
+        val user: User = userRepository.findById(uid).orElse(null) ?: return null
+        return UserMapper.toResponseDto(user)
     }
 
     fun createUser(user: User): User {
@@ -20,20 +21,24 @@ class UserService(
     }
 
     fun findByUsername(username: String): UserResponseDto? {
-        return userRepository.findByUsername(username)
-            ?.let { UserMapper.toResponseDto(it) }
+        val user: User = userRepository.findByUsername(username) ?: return null
+        return UserMapper.toResponseDto(user)
     }
 
     fun getAllUsers(): List<UserResponseDto> {
-        return userRepository.findAll()
-            .map { UserMapper.toResponseDto(it) }
+        return userRepository.findAll().map { user: User ->
+            UserMapper.toResponseDto(user)
+        }
     }
 
     fun updateUserPreferences(uid: String, preferenceIds: Set<UUID>): UserResponseDto? {
-        val user = userRepository.findById(uid).orElse(null) ?: return null
-        val preferenceEntities = preferenceRepository.findAllById(preferenceIds).toSet()
+        val user: User = userRepository.findById(uid).orElse(null) ?: return null
+        val preferenceEntities: Set<Preference> = preferenceRepository.findAllById(preferenceIds).toSet()
 
-        val updatedUser = user.copy(preferences = preferenceEntities)
-        return UserMapper.toResponseDto(userRepository.save(updatedUser))
+        user.preferences.clear()
+        user.preferences.addAll(preferenceEntities)
+
+        val savedUser: User = userRepository.save(user)
+        return UserMapper.toResponseDto(savedUser)
     }
 }

@@ -2,6 +2,7 @@ package com.datelocator.datelocatorbe.preference
 
 import org.springframework.stereotype.Service
 import java.util.UUID
+import kotlin.math.max
 
 @Service
 class PreferenceService(
@@ -17,7 +18,7 @@ class PreferenceService(
         val preference = Preference(
             id = preferenceRequestDto.id ?: UUID.randomUUID(),
             name = preferenceRequestDto.name,
-            users = emptySet()
+            users = mutableSetOf()
         )
         return preferenceRepository.save(preference)
     }

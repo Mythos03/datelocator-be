@@ -9,19 +9,19 @@ import java.time.LocalDateTime
 data class User(
     @Id
     val firebaseUid: String,
-
     val username: String? = null,
-
     val firstName: String? = null,
-
     val lastName: String? = null,
-
     val gender: Genders? = null,
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
-    val preferences: Set<Preference> = emptySet(),
+    @ManyToMany
+    @JoinTable(
+        name = "user_preferences",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "preference_id")]
+    )
+    var preferences: MutableSet<Preference> = mutableSetOf(),
 
     val age: Int? = null,
-
     val createdAt: LocalDateTime = LocalDateTime.now()
 )
