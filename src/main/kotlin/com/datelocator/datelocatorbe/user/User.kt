@@ -12,6 +12,8 @@ data class User(
     val username: String? = null,
     val firstName: String? = null,
     val lastName: String? = null,
+
+    @Enumerated(EnumType.ORDINAL)
     val gender: Genders? = null,
 
     @ManyToMany
