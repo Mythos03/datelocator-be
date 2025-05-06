@@ -14,7 +14,7 @@ class VenueMapper{
             lat = venueRequestDto.lat,
             lng = venueRequestDto.lng,
             openingHours = venueRequestDto.openingHours?.let { OpeningHoursMapper.toEntity(it) },
-            reviews = mutableSetOf()
+            reviews = HashSet(),
         )
     }
 }

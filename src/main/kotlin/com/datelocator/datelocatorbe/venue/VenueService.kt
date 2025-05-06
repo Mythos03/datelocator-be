@@ -9,6 +9,7 @@ import com.datelocator.datelocatorbe.venue.models.Venue
 import com.datelocator.datelocatorbe.venue.models.VenueRequestDto
 import com.datelocator.datelocatorbe.votes.VenuePreferenceVote
 import com.datelocator.datelocatorbe.votes.VenuePreferenceVoteRepository
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -21,50 +22,69 @@ class VenueService(
     private val userService: UserService,
     private val reviewRepository: ReviewRepository
 ) {
+    private val logger = LoggerFactory.getLogger(VenueService::class.java)
+
     companion object {
         const val DEFAULT_VOTE_THRESHOLD = 1
     }
 
-
     fun createVenue(venueRequestDto: VenueRequestDto): Venue {
-        val venue = venueMapper.toEntity(venueRequestDto)
+        try {
+            logger.info("Starting venue creation with data: $venueRequestDto")
 
-        // Handle review association if needed
-        venueRequestDto.reviewId?.let { reviewId ->
-            val review = reviewRepository.findById(reviewId).orElse(null)
-            review?.let { venue.reviews.add(it) }
+            val venue = venueMapper.toEntity(venueRequestDto)
+            logger.debug("Mapped venue entity: $venue")
+
+            venueRequestDto.reviewId?.let { reviewId ->
+                logger.debug("Processing review ID: $reviewId")
+                val review = reviewRepository.findById(reviewId).orElse(null)
+                review?.let {
+                    venue.addReview(it)  // Use the helper method
+                    logger.debug("Added review: ${review.id}")
+                }
+            }
+
+            logger.info("Saving venue to database")
+            return venueRepository.save(venue)
+        } catch (e: Exception) {
+            logger.error("Failed to create venue", e)
+            throw RuntimeException("Failed to create venue: ${e.message}", e)
         }
-
-        return venueRepository.save(venue)
     }
 
     fun addPreferencesToVenue(venue: Venue, updateVenuePreferencesDto: UpdateVenuePreferencesDto) {
-        updateVenuePreferencesDto.preferenceIds
-            .mapNotNull { preferenceIdString ->
-                runCatching {
-                    UUID.fromString(preferenceIdString)
-                }.getOrNull()
-            }
-            .forEach { preferenceId ->
-                preferenceService.getPreferenceById(preferenceId)?.let { preference ->
-                    val existingVote = venuePreferenceVoteRepository
-                        .findByVenueIdAndPreferenceId(venue.id, preferenceId)
+        try {
+            logger.info("Adding preferences to venue: ${venue.id}")
+            updateVenuePreferencesDto.preferenceIds
+                .mapNotNull { preferenceIdString ->
+                    runCatching {
+                        UUID.fromString(preferenceIdString)
+                    }.getOrNull()
+                }
+                .forEach { preferenceId ->
+                    preferenceService.getPreferenceById(preferenceId)?.let { preference ->
+                        val existingVote = venuePreferenceVoteRepository
+                            .findByVenueIdAndPreferenceId(venue.id, preferenceId)
 
-                    if (existingVote == null) {
-                        val user = userService.getUserEntityById(updateVenuePreferencesDto.userId)
-                            ?: throw IllegalArgumentException("User not found")
-                        val vote = VenuePreferenceVote(
-                            venue = venue,
-                            preference = preference,
-                            user = user
-                        )
-                        venuePreferenceVoteRepository.save(vote)
-                    } else {
-                        existingVote.voteCount++
-                        venuePreferenceVoteRepository.save(existingVote)
+                        if (existingVote == null) {
+                            val user = userService.getUserEntityById(updateVenuePreferencesDto.userId)
+                                ?: throw IllegalArgumentException("User not found")
+                            val vote = VenuePreferenceVote(
+                                venue = venue,
+                                preference = preference,
+                                user = user
+                            )
+                            venuePreferenceVoteRepository.save(vote)
+                        } else {
+                            existingVote.voteCount++
+                            venuePreferenceVoteRepository.save(existingVote)
+                        }
                     }
                 }
-            }
+        } catch (e: Exception) {
+            logger.error("Failed to add preferences to venue", e)
+            throw RuntimeException("Failed to add preferences: ${e.message}", e)
+        }
     }
 
     fun getValidatedPreferences(venue: Venue, voteThreshold: Int = DEFAULT_VOTE_THRESHOLD): Set<Preference> {
@@ -78,6 +98,4 @@ class VenueService(
     fun getVenueById(venueId: UUID): Venue? {
         return venueRepository.findById(venueId).orElse(null)
     }
-
-
 }

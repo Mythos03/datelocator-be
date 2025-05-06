@@ -4,6 +4,7 @@ import com.datelocator.datelocatorbe.preference.models.Preference
 import com.datelocator.datelocatorbe.review.models.Review
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.JoinTable
@@ -27,13 +28,17 @@ data class Venue(
     val lat: Double,
     val lng: Double,
 
-    @OneToMany(mappedBy = "venue", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val reviews: MutableSet<Review> = mutableSetOf(),
+    @OneToMany(mappedBy = "venue", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
+    var reviews: MutableSet<Review> = HashSet(),
 
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "opening_hours_id", nullable = true)
     val openingHours: OpeningHours? = null,
 
     val createdAt: Instant = Instant.now()
-
-)
+){
+    fun addReview(review: Review) {
+        reviews.add(review)
+        review.venue = this
+    }
+}

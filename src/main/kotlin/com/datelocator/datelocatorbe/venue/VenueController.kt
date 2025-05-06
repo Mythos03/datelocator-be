@@ -3,6 +3,8 @@ package com.datelocator.datelocatorbe.venue
 import com.datelocator.datelocatorbe.venue.models.UpdateVenuePreferencesDto
 import com.datelocator.datelocatorbe.venue.models.Venue
 import com.datelocator.datelocatorbe.venue.models.VenueRequestDto
+import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -17,19 +19,47 @@ import java.util.UUID
 class VenueController(
     private val venueService: VenueService
 ) {
+    private val logger = LoggerFactory.getLogger(VenueController::class.java)
+
     @PostMapping
-    fun createVenue(@RequestBody venueRequestDto: VenueRequestDto): ResponseEntity<Venue> {
-        return ResponseEntity.ok(venueService.createVenue(venueRequestDto))
+    fun createVenue(@RequestBody venueRequestDto: VenueRequestDto): ResponseEntity<Any> {
+        return try {
+            logger.info("Received venue creation request")
+            logger.debug("Request data: $venueRequestDto")
+
+            val venue = venueService.createVenue(venueRequestDto)
+            logger.info("Venue created successfully with ID: ${venue.id}")
+
+            ResponseEntity.ok(venue)
+        } catch (e: Exception) {
+            logger.error("Failed to create venue", e)
+            ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(mapOf("error" to e.message))
+        }
     }
 
     @PutMapping("/{venueId}/preferences")
-    fun addPreferencesToVenue(@RequestBody updateVenuePreferencesDto: UpdateVenuePreferencesDto, @PathVariable venueId: UUID): ResponseEntity<Venue> {
-        val updatedVenue = venueService.getVenueById(venueId)
-        if (updatedVenue == null) {
-            return ResponseEntity.notFound().build()
-        } else {
-            venueService.addPreferencesToVenue(updatedVenue, updateVenuePreferencesDto)
-            return ResponseEntity.ok(updatedVenue)
+    fun addPreferencesToVenue(
+        @RequestBody updateVenuePreferencesDto: UpdateVenuePreferencesDto,
+        @PathVariable venueId: UUID
+    ): ResponseEntity<Any> {
+        return try {
+            logger.info("Updating preferences for venue: $venueId")
+            logger.debug("Update data: $updateVenuePreferencesDto")
+
+            val venue = venueService.getVenueById(venueId)
+                ?: return ResponseEntity.notFound().build()
+
+            venueService.addPreferencesToVenue(venue, updateVenuePreferencesDto)
+            logger.info("Successfully updated venue preferences")
+
+            ResponseEntity.ok(venue)
+        } catch (e: Exception) {
+            logger.error("Failed to update venue preferences", e)
+            ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(mapOf("error" to e.message))
         }
     }
 }
