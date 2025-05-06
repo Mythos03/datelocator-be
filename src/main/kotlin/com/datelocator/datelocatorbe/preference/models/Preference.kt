@@ -16,8 +16,4 @@ data class Preference(
     @ManyToMany(mappedBy = "preferences")
     @Schema(hidden = true)
     val users: MutableSet<User> = mutableSetOf(),
-
-    @ManyToMany(mappedBy = "preferences")
-    @Schema(hidden = true)
-    val venues: MutableSet<Venue> = mutableSetOf()
 )

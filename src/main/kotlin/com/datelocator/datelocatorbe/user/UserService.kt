@@ -19,6 +19,9 @@ class UserService(
         val user: User = userRepository.findById(uid).orElse(null) ?: return null
         return UserMapper.toResponseDto(user)
     }
+    fun getUserEntityById(uid: String): User? {
+        return userRepository.findById(uid).orElse(null)
+    }
 
     fun createUser(user: User): User {
         return userRepository.save(user)

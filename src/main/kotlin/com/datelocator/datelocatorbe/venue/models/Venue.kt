@@ -1,7 +1,7 @@
 package com.datelocator.datelocatorbe.venue.models
 
 import com.datelocator.datelocatorbe.preference.models.Preference
-import com.datelocator.datelocatorbe.review.Review
+import com.datelocator.datelocatorbe.review.models.Review
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
@@ -29,14 +29,6 @@ data class Venue(
 
     @OneToMany(mappedBy = "venue", cascade = [CascadeType.ALL], orphanRemoval = true)
     val reviews: MutableSet<Review> = mutableSetOf(),
-
-    @ManyToMany
-    @JoinTable(
-        name = "venue_preferences",
-        joinColumns = [JoinColumn(name = "venue_id")],
-        inverseJoinColumns = [JoinColumn(name = "preference_id")]
-    )
-    var preferences: MutableSet<Preference> = mutableSetOf(),
 
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "opening_hours_id", nullable = true)

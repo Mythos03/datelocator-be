@@ -1,7 +1,7 @@
 package com.datelocator.datelocatorbe.user.models
 
 import com.datelocator.datelocatorbe.preference.models.Preference
-import com.datelocator.datelocatorbe.review.Review
+import com.datelocator.datelocatorbe.review.models.Review
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
