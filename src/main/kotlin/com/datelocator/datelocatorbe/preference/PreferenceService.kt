@@ -1,8 +1,10 @@
 package com.datelocator.datelocatorbe.preference
 
+import com.datelocator.datelocatorbe.preference.models.Preference
+import com.datelocator.datelocatorbe.preference.models.PreferenceRequestDto
+import com.datelocator.datelocatorbe.preference.models.PreferenceResponseDto
 import org.springframework.stereotype.Service
 import java.util.UUID
-import kotlin.math.max
 
 @Service
 class PreferenceService(

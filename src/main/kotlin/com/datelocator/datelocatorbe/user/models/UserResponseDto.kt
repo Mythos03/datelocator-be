@@ -1,4 +1,4 @@
-package com.datelocator.datelocatorbe.user
+package com.datelocator.datelocatorbe.user.models
 
 data class UserResponseDto (
     val firebaseUid: String,

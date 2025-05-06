@@ -1,5 +1,8 @@
 package com.datelocator.datelocatorbe.user
 
+import com.datelocator.datelocatorbe.user.models.UpdateUserPreferencesRequest
+import com.datelocator.datelocatorbe.user.models.User
+import com.datelocator.datelocatorbe.user.models.UserResponseDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 

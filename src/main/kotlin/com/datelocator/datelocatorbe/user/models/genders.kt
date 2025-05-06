@@ -1,4 +1,4 @@
-package com.datelocator.datelocatorbe.user
+package com.datelocator.datelocatorbe.user.models
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue

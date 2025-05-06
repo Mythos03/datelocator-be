@@ -1,5 +1,8 @@
 package com.datelocator.datelocatorbe.preference
 
+import com.datelocator.datelocatorbe.preference.models.Preference
+import com.datelocator.datelocatorbe.preference.models.PreferenceRequestDto
+import com.datelocator.datelocatorbe.preference.models.PreferenceResponseDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping

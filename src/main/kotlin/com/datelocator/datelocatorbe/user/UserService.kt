@@ -1,7 +1,9 @@
 package com.datelocator.datelocatorbe.user
 
-import com.datelocator.datelocatorbe.preference.Preference
+import com.datelocator.datelocatorbe.preference.models.Preference
 import com.datelocator.datelocatorbe.preference.PreferenceRepository
+import com.datelocator.datelocatorbe.user.models.User
+import com.datelocator.datelocatorbe.user.models.UserResponseDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID

@@ -1,4 +1,4 @@
-package com.datelocator.datelocatorbe.preference
+package com.datelocator.datelocatorbe.preference.models
 
 import java.util.*
 

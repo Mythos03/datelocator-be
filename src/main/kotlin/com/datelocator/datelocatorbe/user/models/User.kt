@@ -1,6 +1,7 @@
-package com.datelocator.datelocatorbe.user
+package com.datelocator.datelocatorbe.user.models
 
-import com.datelocator.datelocatorbe.preference.Preference
+import com.datelocator.datelocatorbe.preference.models.Preference
+import com.datelocator.datelocatorbe.review.Review
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -25,8 +26,12 @@ data class User(
     var preferences: MutableSet<Preference> = mutableSetOf(),
 
     val age: Int? = null,
-    val createdAt: LocalDateTime = LocalDateTime.now()
-) {
+    val createdAt: LocalDateTime = LocalDateTime.now(),
+
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val reviews: MutableSet<Review> = mutableSetOf(),
+
+    ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is User) return false

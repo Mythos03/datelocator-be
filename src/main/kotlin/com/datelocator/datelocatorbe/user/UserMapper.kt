@@ -1,5 +1,7 @@
 package com.datelocator.datelocatorbe.user
 
+import com.datelocator.datelocatorbe.user.models.User
+import com.datelocator.datelocatorbe.user.models.UserResponseDto
 
 object UserMapper {
     fun toResponseDto(user: User): UserResponseDto {
