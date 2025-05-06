@@ -7,13 +7,11 @@ import org.springframework.stereotype.Service
 @Service
 class VenueService(
     private val venueRepository: VenueRepository,
+    private val venueMapper: VenueMapper
 ) {
-    fun getVenueById(id: String): VenueResponseDto? {
-        val venue = venueRepository.findById(id).orElse(null) ?: return null
-        return VenueMapper.toResponseDto(venue)
-    }
-
     fun createVenue(venueRequestDto: VenueRequestDto): Venue {
-        return venueRepository.save(venue)
+        return venueRepository.save(
+            venueMapper.toEntity(venueRequestDto)
+        )
     }
 }

@@ -24,4 +24,8 @@ class PreferenceService(
         )
         return preferenceRepository.save(preference)
     }
+
+    fun getPreferenceById(id: UUID): Preference? {
+        return preferenceRepository.findById(id).orElse(null)
+    }
 }

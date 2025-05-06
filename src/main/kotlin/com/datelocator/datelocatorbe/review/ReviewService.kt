@@ -10,4 +10,8 @@ class ReviewService(
     fun getReviewById(id: UUID): Review? {
         return reviewRepository.findById(id).orElse(null)
     }
+
+    fun createReview(review: Review): Review {
+        return reviewRepository.save(review)
+    }
 }
