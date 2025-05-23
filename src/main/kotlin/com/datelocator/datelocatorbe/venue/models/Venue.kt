@@ -22,21 +22,19 @@ data class Venue(
     val id: UUID = UUID.randomUUID(),
 
     val googlePlacesId: String,
-
     val name: String,
-
     val lat: Double,
     val lng: Double,
 
     @OneToMany(mappedBy = "venue", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
-    var reviews: MutableSet<Review> = HashSet(),
+    val reviews: MutableSet<Review> = mutableSetOf(),
 
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "opening_hours_id", nullable = true)
     val openingHours: OpeningHours? = null,
 
     val createdAt: Instant = Instant.now()
-){
+) {
     fun addReview(review: Review) {
         reviews.add(review)
         review.venue = this

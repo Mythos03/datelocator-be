@@ -1,5 +1,4 @@
-package com.datelocator.datelocatorbe.venue.models
-
+import com.datelocator.datelocatorbe.venue.models.Venue
 import jakarta.persistence.CollectionTable
 import jakarta.persistence.Column
 import jakarta.persistence.ElementCollection
@@ -23,7 +22,7 @@ data class OpeningHours(
         joinColumns = [JoinColumn(name = "opening_hours_id")],
     )
     @Column(name = "text")
-    val weekdayText: List<String>? = emptyList(),
+    val weekdayText: MutableList<String>? = mutableListOf(), // Ensure mutable list
 
     @OneToOne(mappedBy = "openingHours")
     val venue: Venue? = null,

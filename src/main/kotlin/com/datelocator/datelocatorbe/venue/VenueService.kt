@@ -33,19 +33,29 @@ class VenueService(
             logger.info("Starting venue creation with data: $venueRequestDto")
 
             val venue = venueMapper.toEntity(venueRequestDto)
-            logger.debug("Mapped venue entity: $venue")
+            logger.debug("Mapped venue entity: {}", venue)
 
-            venueRequestDto.reviewId?.let { reviewId ->
-                logger.debug("Processing review ID: $reviewId")
-                val review = reviewRepository.findById(reviewId).orElse(null)
-                review?.let {
-                    venue.addReview(it)  // Use the helper method
-                    logger.debug("Added review: ${review.id}")
+            // Save the venue first
+            val savedVenue = venueRepository.save(venue)
+            logger.debug("Saved venue with ID: {}", savedVenue.id)
+
+            // Add preferences if provided
+            venueRequestDto.preferenceIds?.forEach { preferenceId ->
+                preferenceService.getPreferenceById(preferenceId)?.let { preference ->
+                    val user = userService.getUserEntityById(venueRequestDto.userId ?: throw IllegalArgumentException("User ID is null"))
+                        ?: throw IllegalArgumentException("User not found")
+                    val venuePreferenceVote = VenuePreferenceVote(
+                        venue = savedVenue,
+                        preference = preference,
+                        voteCount = 1,
+                        user = user
+                    )
+                    venuePreferenceVoteRepository.save(venuePreferenceVote)
+                    logger.debug("Added preference vote for preference ID: {}", preference.id)
                 }
             }
 
-            logger.info("Saving venue to database")
-            return venueRepository.save(venue)
+            return savedVenue
         } catch (e: Exception) {
             logger.error("Failed to create venue", e)
             throw RuntimeException("Failed to create venue: ${e.message}", e)
