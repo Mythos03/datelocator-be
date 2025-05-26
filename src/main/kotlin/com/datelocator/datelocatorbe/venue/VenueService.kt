@@ -32,7 +32,12 @@ class VenueService(
         try {
             logger.info("Starting venue creation with data: $venueRequestDto")
 
-            val venue = venueMapper.toEntity(venueRequestDto)
+            // Get the user who created the venue
+            val createdBy = venueRequestDto.userId?.let { userId ->
+                userService.getUserEntityById(userId)
+            }
+
+            val venue = venueMapper.toEntity(venueRequestDto, createdBy)
             logger.debug("Mapped venue entity: {}", venue)
 
             // Save the venue first

@@ -7,7 +7,7 @@ object OpeningHoursMapper {
     fun toEntity(openingHoursRequestDto: OpeningHoursRequestDto): OpeningHours {
         return OpeningHours(
             openNow = openingHoursRequestDto.openNow,
-            weekdayText = openingHoursRequestDto.weekdayText?.map { it } ?: emptyList()
+            weekdayText = (openingHoursRequestDto.weekdayText?.map { it } ?: emptyList()) as MutableList<String>?
         )
     }
 }
