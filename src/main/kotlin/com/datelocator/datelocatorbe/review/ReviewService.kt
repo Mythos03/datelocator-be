@@ -6,6 +6,7 @@ import com.datelocator.datelocatorbe.review.models.ReviewRequestDto
 import com.datelocator.datelocatorbe.review.models.ReviewResponseDto
 import com.datelocator.datelocatorbe.user.UserService
 import com.datelocator.datelocatorbe.venue.VenueService
+import com.datelocator.datelocatorbe.venue.models.UpdateVenuePreferencesDto
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -32,6 +33,7 @@ class ReviewService(
         if (preferences.isEmpty()) {
             throw IllegalArgumentException("Preferences not found")
         }
+        venueService.addPreferencesToVenue(venue,  UpdateVenuePreferencesDto(reviewRequestDto.preferenceIds ?: emptySet(), reviewRequestDto.userId))
 
         val review = Review(
             rating = reviewRequestDto.rating,

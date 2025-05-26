@@ -71,11 +71,6 @@ class VenueService(
         try {
             logger.info("Adding preferences to venue: ${venue.id}")
             updateVenuePreferencesDto.preferenceIds
-                .mapNotNull { preferenceIdString ->
-                    runCatching {
-                        UUID.fromString(preferenceIdString)
-                    }.getOrNull()
-                }
                 .forEach { preferenceId ->
                     preferenceService.getPreferenceById(preferenceId)?.let { preference ->
                         val existingVote = venuePreferenceVoteRepository
