@@ -1,5 +1,6 @@
 package com.datelocator.datelocatorbe.review
 
+import com.datelocator.datelocatorbe.preference.PreferenceRepository
 import com.datelocator.datelocatorbe.review.models.Review
 import com.datelocator.datelocatorbe.review.models.ReviewRequestDto
 import com.datelocator.datelocatorbe.review.models.ReviewResponseDto
@@ -12,7 +13,8 @@ import java.util.UUID
 class ReviewService(
     private val reviewRepository: ReviewRepository,
     private val userService: UserService,
-    private val venueService: VenueService
+    private val venueService: VenueService,
+    private val preferenceRepository: PreferenceRepository,
 ) {
     fun getReviewById(id: UUID): ReviewResponseDto? {
         val review = reviewRepository.findById(id).orElse(null) ?: return null
@@ -26,11 +28,17 @@ class ReviewService(
         val venue = venueService.getVenueById(reviewRequestDto.venueId)
             ?: throw IllegalArgumentException("Venue not found")
 
+        val preferences  = preferenceRepository.findAllById(reviewRequestDto.preferenceIds ?: emptySet())
+        if (preferences.isEmpty()) {
+            throw IllegalArgumentException("Preferences not found")
+        }
+
         val review = Review(
             rating = reviewRequestDto.rating,
             reviewText = reviewRequestDto.reviewText,
             user = user,
-            venue = venue
+            venue = venue,
+            preferences = preferences.toMutableSet()
         )
 
         val savedReview = reviewRepository.save(review)
