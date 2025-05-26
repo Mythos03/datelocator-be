@@ -6,7 +6,6 @@ import com.datelocator.datelocatorbe.venue.models.OpeningHoursRequestDto
 object OpeningHoursMapper {
     fun toEntity(openingHoursRequestDto: OpeningHoursRequestDto): OpeningHours {
         return OpeningHours(
-            openNow = openingHoursRequestDto.openNow,
             weekdayText = (openingHoursRequestDto.weekdayText?.map { it } ?: emptyList()) as MutableList<String>?
         )
     }

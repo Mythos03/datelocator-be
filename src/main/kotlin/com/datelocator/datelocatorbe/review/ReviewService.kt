@@ -2,6 +2,7 @@ package com.datelocator.datelocatorbe.review
 
 import com.datelocator.datelocatorbe.review.models.Review
 import com.datelocator.datelocatorbe.review.models.ReviewRequestDto
+import com.datelocator.datelocatorbe.review.models.ReviewResponseDto
 import com.datelocator.datelocatorbe.user.UserService
 import com.datelocator.datelocatorbe.venue.VenueService
 import org.springframework.stereotype.Service
@@ -13,11 +14,12 @@ class ReviewService(
     private val userService: UserService,
     private val venueService: VenueService
 ) {
-    fun getReviewById(id: UUID): Review? {
-        return reviewRepository.findById(id).orElse(null)
+    fun getReviewById(id: UUID): ReviewResponseDto? {
+        val review = reviewRepository.findById(id).orElse(null) ?: return null
+        return ReviewMapper.toResponseDto(review)
     }
 
-    fun createReview(reviewRequestDto: ReviewRequestDto): Review {
+    fun createReview(reviewRequestDto: ReviewRequestDto): ReviewResponseDto {
         val user = userService.getUserEntityById(reviewRequestDto.userId)
             ?: throw IllegalArgumentException("User not found")
 
@@ -31,6 +33,7 @@ class ReviewService(
             venue = venue
         )
 
-        return reviewRepository.save(review)
+        val savedReview = reviewRepository.save(review)
+        return ReviewMapper.toResponseDto(savedReview)
     }
 }

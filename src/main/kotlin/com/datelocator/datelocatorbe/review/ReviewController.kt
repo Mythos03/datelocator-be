@@ -2,6 +2,7 @@ package com.datelocator.datelocatorbe.review
 
 import com.datelocator.datelocatorbe.review.models.Review
 import com.datelocator.datelocatorbe.review.models.ReviewRequestDto
+import com.datelocator.datelocatorbe.review.models.ReviewResponseDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -14,7 +15,7 @@ class ReviewController (
     private val reviewService: ReviewService
 ){
     @PostMapping
-    fun createReview(@RequestBody reviewRequestDto: ReviewRequestDto): ResponseEntity<Review> {
+    fun createReview(@RequestBody reviewRequestDto: ReviewRequestDto): ResponseEntity<ReviewResponseDto?> {
         return try {
             val review = reviewService.createReview(reviewRequestDto)
             ResponseEntity.ok(review)

@@ -23,7 +23,6 @@ class VenueMapper {
 
     private fun toOpeningHours(dto: OpeningHoursRequestDto): OpeningHours {
         return OpeningHours(
-            openNow = dto.openNow,
             weekdayText = dto.weekdayText?.toList()?.toMutableList() ?: mutableListOf()
         )
     }
