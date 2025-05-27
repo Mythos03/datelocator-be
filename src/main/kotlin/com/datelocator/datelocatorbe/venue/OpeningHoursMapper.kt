@@ -6,7 +6,9 @@ import com.datelocator.datelocatorbe.venue.models.OpeningHoursRequestDto
 object OpeningHoursMapper {
     fun toEntity(openingHoursRequestDto: OpeningHoursRequestDto): OpeningHours {
         return OpeningHours(
-            weekdayText = (openingHoursRequestDto.weekdayText?.map { it } ?: emptyList()) as MutableList<String>?
+            weekdayText = openingHoursRequestDto.weekdayText
+                ?.map { it.replace(Regex("[\\u202F\\u2009]"), " ") } // Replace NNBSP and THSP with regular spaces
+                ?.toMutableList()
         )
     }
 }

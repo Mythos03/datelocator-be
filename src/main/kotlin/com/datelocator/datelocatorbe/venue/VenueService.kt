@@ -7,8 +7,10 @@ import com.datelocator.datelocatorbe.user.UserService
 import com.datelocator.datelocatorbe.venue.models.UpdateVenuePreferencesDto
 import com.datelocator.datelocatorbe.venue.models.Venue
 import com.datelocator.datelocatorbe.venue.models.VenueRequestDto
+import com.datelocator.datelocatorbe.venue.models.VenueResponseDto
 import com.datelocator.datelocatorbe.votes.VenuePreferenceVote
 import com.datelocator.datelocatorbe.votes.VenuePreferenceVoteRepository
+import com.datelocator.datelocatorbe.venue.VenueMapper
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -107,5 +109,16 @@ class VenueService(
 
     fun getVenueById(venueId: UUID): Venue? {
         return venueRepository.findById(venueId).orElse(null)
+    }
+
+    fun getVenueByGoogleId(googleId: String): VenueResponseDto? {
+        val venue = venueRepository.findVenueByGooglePlacesId(googleId) ?: return null
+        val validatedPreferences = getValidatedPreferences(venue)
+        return venueMapper.toResponseDto(venue, validatedPreferences)
+    }
+
+    fun venueExistsByGoogleId(googleId: String): Boolean {
+        logger.info("Checking if venue exists with Google Places ID: $googleId")
+        return venueRepository.existsByGooglePlacesId(googleId)
     }
 }

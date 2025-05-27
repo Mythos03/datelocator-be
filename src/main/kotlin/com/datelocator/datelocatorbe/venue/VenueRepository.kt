@@ -7,4 +7,6 @@ import java.util.UUID
 
 @Repository
 interface VenueRepository : JpaRepository<Venue, UUID>{
+    fun findVenueByGooglePlacesId(googlePlacesId: String): Venue?
+    fun existsByGooglePlacesId(googlePlacesId: String): Boolean
 }
