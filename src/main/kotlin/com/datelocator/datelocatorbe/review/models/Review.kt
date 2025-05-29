@@ -20,7 +20,7 @@ data class Review(
     val id: UUID = UUID.randomUUID(),
 
     val rating: Double,
-    val reviewText: String,
+    val reviewText: String?,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "venue_id", nullable = false)
