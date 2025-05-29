@@ -7,7 +7,7 @@ data class VenueRequestDto(
     val name: String,
     val lat: Double,
     val lng: Double,
-    val openingHours: OpeningHoursRequestDto? = null,
+    val openingHoursRequestDto: OpeningHoursRequestDto? = null,
     val preferenceIds: MutableSet<UUID>? = mutableSetOf(),
     val userId: String? = null
 )

@@ -27,7 +27,7 @@ class VenueController(
     fun createVenue(@RequestBody venueRequestDto: VenueRequestDto): ResponseEntity<Any> {
         return try {
             logger.info("Received venue creation request")
-            logger.debug("Request data: $venueRequestDto")
+            logger.debug("Request data: {}", venueRequestDto)
 
             val venue = venueService.createVenue(venueRequestDto)
             logger.info("Venue created successfully with ID: ${venue.id}")

@@ -1,5 +1,6 @@
 package com.datelocator.datelocatorbe.venue.models
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.CollectionTable
 import jakarta.persistence.Column
 import jakarta.persistence.ElementCollection
@@ -22,8 +23,9 @@ data class OpeningHours(
         joinColumns = [JoinColumn(name = "opening_hours_id")],
     )
     @Column(name = "text")
-    val weekdayText: MutableList<String>? = mutableListOf(), // Ensure mutable list
+    val weekdayText: MutableList<String> = mutableListOf(), // Ensure mutable list
 
+    @JsonIgnore
     @OneToOne(mappedBy = "openingHours")
     val venue: Venue? = null,
 )

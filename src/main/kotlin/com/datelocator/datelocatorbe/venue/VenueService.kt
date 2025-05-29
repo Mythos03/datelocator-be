@@ -10,7 +10,6 @@ import com.datelocator.datelocatorbe.venue.models.VenueRequestDto
 import com.datelocator.datelocatorbe.venue.models.VenueResponseDto
 import com.datelocator.datelocatorbe.votes.VenuePreferenceVote
 import com.datelocator.datelocatorbe.votes.VenuePreferenceVoteRepository
-import com.datelocator.datelocatorbe.venue.VenueMapper
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -34,7 +33,7 @@ class VenueService(
         try {
             logger.info("Starting venue creation with data: $venueRequestDto")
 
-            // Get the user who created the venue
+
             val createdBy = venueRequestDto.userId?.let { userId ->
                 userService.getUserEntityById(userId)
             }
@@ -42,11 +41,9 @@ class VenueService(
             val venue = venueMapper.toEntity(venueRequestDto, createdBy)
             logger.debug("Mapped venue entity: {}", venue)
 
-            // Save the venue first
             val savedVenue = venueRepository.save(venue)
             logger.debug("Saved venue with ID: {}", savedVenue.id)
 
-            // Add preferences if provided
             venueRequestDto.preferenceIds?.forEach { preferenceId ->
                 preferenceService.getPreferenceById(preferenceId)?.let { preference ->
                     val user = userService.getUserEntityById(venueRequestDto.userId ?: throw IllegalArgumentException("User ID is null"))

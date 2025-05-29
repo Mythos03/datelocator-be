@@ -3,22 +3,22 @@ package com.datelocator.datelocatorbe.venue
 import com.datelocator.datelocatorbe.preference.models.Preference
 import com.datelocator.datelocatorbe.review.ReviewMapper
 import com.datelocator.datelocatorbe.user.models.User
-import com.datelocator.datelocatorbe.venue.models.OpeningHours
-import com.datelocator.datelocatorbe.venue.models.OpeningHoursRequestDto
 import com.datelocator.datelocatorbe.venue.models.Venue
 import com.datelocator.datelocatorbe.venue.models.VenueRequestDto
 import com.datelocator.datelocatorbe.venue.models.VenueResponseDto
 import org.springframework.stereotype.Component
 
 @Component
-class VenueMapper {
+class VenueMapper(
+    private val openingHoursMapper: OpeningHoursMapper
+){
     fun toEntity(venueRequestDto: VenueRequestDto, createdBy: User? = null): Venue {
         return Venue(
             googlePlacesId = venueRequestDto.googlePlacesId,
             name = venueRequestDto.name,
             lat = venueRequestDto.lat,
             lng = venueRequestDto.lng,
-            openingHours = venueRequestDto.openingHours?.let { toOpeningHours(it) },
+            openingHours = venueRequestDto.openingHoursRequestDto?.let { openingHoursMapper.toEntity(it) },
             createdBy = createdBy,
             reviews = mutableSetOf()
         )
@@ -36,9 +36,4 @@ class VenueMapper {
         )
     }
 
-    private fun toOpeningHours(dto: OpeningHoursRequestDto): OpeningHours {
-        return OpeningHours(
-            weekdayText = dto.weekdayText?.toList()?.toMutableList() ?: mutableListOf()
-        )
-    }
 }
