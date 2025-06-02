@@ -2,6 +2,7 @@ package com.datelocator.datelocatorbe.venue
 
 import com.datelocator.datelocatorbe.preference.models.Preference
 import com.datelocator.datelocatorbe.review.ReviewMapper
+import com.datelocator.datelocatorbe.user.UserService
 import com.datelocator.datelocatorbe.user.models.User
 import com.datelocator.datelocatorbe.venue.models.Venue
 import com.datelocator.datelocatorbe.venue.models.VenueRequestDto
@@ -10,16 +11,19 @@ import org.springframework.stereotype.Component
 
 @Component
 class VenueMapper(
-    private val openingHoursMapper: OpeningHoursMapper
+    private val openingHoursMapper: OpeningHoursMapper,
+    private val userService: UserService
 ){
     fun toEntity(venueRequestDto: VenueRequestDto, createdBy: User? = null): Venue {
+        val user = venueRequestDto.userId?.let { userService.getUserEntityById(it) } ?: createdBy
+
         return Venue(
             googlePlacesId = venueRequestDto.googlePlacesId,
             name = venueRequestDto.name,
             lat = venueRequestDto.lat,
             lng = venueRequestDto.lng,
             openingHours = venueRequestDto.openingHoursRequestDto?.let { openingHoursMapper.toEntity(it) },
-            createdBy = createdBy,
+            createdBy = user,
             reviews = mutableSetOf()
         )
     }

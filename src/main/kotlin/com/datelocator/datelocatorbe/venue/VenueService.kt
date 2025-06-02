@@ -44,21 +44,6 @@ class VenueService(
             val savedVenue = venueRepository.save(venue)
             logger.debug("Saved venue with ID: {}", savedVenue.id)
 
-            venueRequestDto.preferenceIds?.forEach { preferenceId ->
-                preferenceService.getPreferenceById(preferenceId)?.let { preference ->
-                    val user = userService.getUserEntityById(venueRequestDto.userId ?: throw IllegalArgumentException("User ID is null"))
-                        ?: throw IllegalArgumentException("User not found")
-                    val venuePreferenceVote = VenuePreferenceVote(
-                        venue = savedVenue,
-                        preference = preference,
-                        voteCount = 1,
-                        user = user
-                    )
-                    venuePreferenceVoteRepository.save(venuePreferenceVote)
-                    logger.debug("Added preference vote for preference ID: {}", preference.id)
-                }
-            }
-
             return savedVenue
         } catch (e: Exception) {
             logger.error("Failed to create venue", e)
