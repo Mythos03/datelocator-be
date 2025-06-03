@@ -2,7 +2,9 @@ package com.datelocator.datelocatorbe.user
 
 import com.datelocator.datelocatorbe.user.models.User
 import com.datelocator.datelocatorbe.user.models.UserResponseDto
+import org.springframework.stereotype.Component
 
+@Component
 object UserMapper {
     fun toResponseDto(user: User): UserResponseDto {
         return UserResponseDto(

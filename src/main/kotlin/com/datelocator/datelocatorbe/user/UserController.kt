@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/users")
 class UserController(
-    private val userService: UserService
+    private val userService: UserService,
+    private val userMapper: UserMapper
 ) {
 
     @GetMapping("/{uid}")
@@ -20,9 +21,9 @@ class UserController(
     }
 
     @PostMapping
-    fun createUser(@RequestBody user: User): ResponseEntity<User> {
+    fun createUser(@RequestBody user: User): ResponseEntity<UserResponseDto> {
         val savedUser = userService.createUser(user)
-        return ResponseEntity.ok(savedUser)
+        return ResponseEntity.ok(userMapper.toResponseDto(savedUser))
     }
 
     @GetMapping
@@ -31,7 +32,7 @@ class UserController(
     }
 
     @GetMapping("/username")
-    fun findByEmail(@RequestParam username: String): ResponseEntity<UserResponseDto> {
+    fun findByUsername(@RequestParam username: String): ResponseEntity<UserResponseDto> {
         val user = userService.findByUsername(username)
         return if (user != null) ResponseEntity.ok(user)
         else ResponseEntity.notFound().build()
