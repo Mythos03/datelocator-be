@@ -108,7 +108,7 @@ class VenueService(
     fun recommendedVenuesForUser(recommendedVenueRequestDto: RecommendedVenueRequestDto): List<VenueResponseDto> {
         val preferenceIds = preferenceService.returnPreferenceIdsByUserId(recommendedVenueRequestDto.userId)
 
-        val venues = venueRepository.findRecommendedVenuesByProximityAndPreferences(recommendedVenueRequestDto.lat, recommendedVenueRequestDto.lng, preferenceIds, minRating = 3.0, limit = 5, offset = 0)
+        val venues = venueRepository.findRecommendedVenuesByProximityAndPreferences(recommendedVenueRequestDto.lat, recommendedVenueRequestDto.lng, preferenceIds, recommendedVenueRequestDto.minRating, recommendedVenueRequestDto.limit, recommendedVenueRequestDto.offset)
 
         return venues.map { venue ->
             val validatedPreferences = getValidatedPreferences(venue)
