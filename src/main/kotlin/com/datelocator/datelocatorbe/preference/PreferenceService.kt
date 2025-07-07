@@ -28,4 +28,10 @@ class PreferenceService(
     fun getPreferenceById(id: UUID): Preference? {
         return preferenceRepository.findById(id).orElse(null)
     }
+    
+    fun returnPreferenceIdsByUserId(userId: String): List<UUID> {
+        val preferences = preferenceRepository.findPreferencesByUserId(userId)
+
+        return preferences.map { it.id }
+    }
 }

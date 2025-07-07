@@ -1,8 +1,9 @@
 package com.datelocator.datelocatorbe.venue
 
+import com.datelocator.datelocatorbe.venue.models.RecommendedVenueRequestDto
 import com.datelocator.datelocatorbe.venue.models.UpdateVenuePreferencesDto
-import com.datelocator.datelocatorbe.venue.models.Venue
 import com.datelocator.datelocatorbe.venue.models.VenueRequestDto
+import com.datelocator.datelocatorbe.venue.models.VenueResponseDto
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -36,7 +37,7 @@ class VenueController(
         } catch (e: Exception) {
             logger.error("Failed to create venue", e)
             ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR) //TODO: fix error messages
                 .body(mapOf("error" to e.message))
         }
     }
@@ -102,5 +103,10 @@ class VenueController(
             logger.error("Error checking if venue exists with Google Places ID: $googlePlacesId", e)
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
         }
+    }
+
+    @PostMapping(path = ["/recommended"])
+    fun recommendedVenuesForUser(@RequestBody recommendedVenueRequestDto: RecommendedVenueRequestDto): ResponseEntity<List<VenueResponseDto>> {
+        return ResponseEntity.ok(venueService.recommendedVenuesForUser(recommendedVenueRequestDto))
     }
 }

@@ -4,6 +4,7 @@ import com.datelocator.datelocatorbe.preference.PreferenceService
 import com.datelocator.datelocatorbe.preference.models.Preference
 import com.datelocator.datelocatorbe.review.ReviewRepository
 import com.datelocator.datelocatorbe.user.UserService
+import com.datelocator.datelocatorbe.venue.models.RecommendedVenueRequestDto
 import com.datelocator.datelocatorbe.venue.models.UpdateVenuePreferencesDto
 import com.datelocator.datelocatorbe.venue.models.Venue
 import com.datelocator.datelocatorbe.venue.models.VenueRequestDto
@@ -102,5 +103,18 @@ class VenueService(
     fun venueExistsByGoogleId(googleId: String): Boolean {
         logger.info("Checking if venue exists with Google Places ID: $googleId")
         return venueRepository.existsByGooglePlacesId(googleId)
+    }
+
+    fun recommendedVenuesForUser(recommendedVenueRequestDto: RecommendedVenueRequestDto): List<VenueResponseDto> {
+        val preferenceIds = preferenceService.returnPreferenceIdsByUserId(recommendedVenueRequestDto.userId)
+
+        val venues = venueRepository.findRecommendedVenuesByProximityAndPreferences(recommendedVenueRequestDto.lat, recommendedVenueRequestDto.lng, preferenceIds, minRating = 3.0, limit = 5, offset = 0)
+
+        return venues.map { venue ->
+            val validatedPreferences = getValidatedPreferences(venue)
+            venueMapper.toResponseDto(venue, validatedPreferences)
+        }
+
+
     }
 }
