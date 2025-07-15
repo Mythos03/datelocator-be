@@ -2,6 +2,7 @@ package com.datelocator.datelocatorbe.user
 
 import com.datelocator.datelocatorbe.user.models.UpdateUserPreferencesRequest
 import com.datelocator.datelocatorbe.user.models.User
+import com.datelocator.datelocatorbe.user.models.UserRequestDto
 import com.datelocator.datelocatorbe.user.models.UserResponseDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -21,7 +22,7 @@ class UserController(
     }
 
     @PostMapping
-    fun createUser(@RequestBody user: User): ResponseEntity<UserResponseDto> {
+    fun createUser(@RequestBody user: UserRequestDto): ResponseEntity<UserResponseDto> {
         val savedUser = userService.createUser(user)
         return ResponseEntity.ok(userMapper.toResponseDto(savedUser))
     }

@@ -3,6 +3,7 @@ package com.datelocator.datelocatorbe.user
 import com.datelocator.datelocatorbe.preference.models.Preference
 import com.datelocator.datelocatorbe.preference.PreferenceRepository
 import com.datelocator.datelocatorbe.user.models.User
+import com.datelocator.datelocatorbe.user.models.UserRequestDto
 import com.datelocator.datelocatorbe.user.models.UserResponseDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -12,7 +13,8 @@ import java.util.UUID
 @Transactional
 class UserService(
     private val userRepository: UserRepository,
-    private val preferenceRepository: PreferenceRepository
+    private val preferenceRepository: PreferenceRepository,
+    private val userMapper: UserMapper
 ) {
 
     fun getUserById(uid: String): UserResponseDto? {
@@ -23,8 +25,8 @@ class UserService(
         return userRepository.findById(uid).orElse(null)
     }
 
-    fun createUser(user: User): User {
-        return userRepository.save(user)
+    fun createUser(user: UserRequestDto): User {
+        return userRepository.save(userMapper.userRequestDtoToUser(user))
     }
 
     fun findByUsername(username: String): UserResponseDto? {
