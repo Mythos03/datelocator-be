@@ -28,7 +28,13 @@ data class Venue(
     @JoinColumn(name = "user_id")
     val createdBy: User? = null,
 
-    val createdAt: Instant = Instant.now()
+    val createdAt: Instant = Instant.now(),
+
+    @Column(name = "average_rating", nullable = false, columnDefinition = "DOUBLE PRECISION DEFAULT 0.0")
+    var averageRating: Double = 0.0,
+
+    @Column(name = "review_count", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
+    var reviewCount: Int = 0
 ) {
     fun addReview(review: Review) {
         reviews.add(review)

@@ -36,7 +36,9 @@ class VenueMapper(
             lng = venue.lng,
             openingHours = venue.openingHours,
             preferences = validatedPreferences.map { it.id.toString() }.toMutableSet(),
-            reviews = venue.reviews.map { ReviewMapper.toResponseDto(it) }.toMutableSet()
+            reviews = venue.reviews.map { ReviewMapper.toResponseDto(it) }.toMutableSet(),
+            averageRating = venue.averageRating,
+            reviewCount = venue.reviewCount,
         )
     }
 

@@ -29,6 +29,9 @@ class ReviewService(
         val venue = venueService.getVenueById(reviewRequestDto.venueId)
             ?: throw IllegalArgumentException("Venue not found")
 
+        venue.averageRating = (venue.averageRating * venue.reviewCount + reviewRequestDto.rating) / (venue.reviewCount + 1)
+        venue.reviewCount++
+
         val preferences  = preferenceRepository.findAllById(reviewRequestDto.preferenceIds ?: emptySet())
         if (preferences.isEmpty()) {
             throw IllegalArgumentException("Preferences not found")
