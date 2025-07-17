@@ -38,6 +38,8 @@ dependencies {
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	implementation("org.postgresql:postgresql:42.6.0")
+	implementation("com.google.maps:google-maps-services:2.2.0")
+	implementation("com.google.code.gson:gson:2.10.1")
 }
 
 kotlin {
