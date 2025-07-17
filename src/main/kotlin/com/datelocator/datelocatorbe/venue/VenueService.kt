@@ -12,6 +12,8 @@ import com.datelocator.datelocatorbe.venue.models.VenueResponseDto
 import com.datelocator.datelocatorbe.votes.VenuePreferenceVote
 import com.datelocator.datelocatorbe.votes.VenuePreferenceVoteRepository
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -116,5 +118,10 @@ class VenueService(
         }
 
 
+    }
+
+    fun searchVenuesByName(name: String, page: Int, size: Int): Page<Venue> {
+        val pageable = PageRequest.of(page, size)
+        return venueRepository.findByNameContainingIgnoreCase(name, pageable)
     }
 }

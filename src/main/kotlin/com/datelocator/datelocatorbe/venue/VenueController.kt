@@ -5,6 +5,7 @@ import com.datelocator.datelocatorbe.venue.models.UpdateVenuePreferencesDto
 import com.datelocator.datelocatorbe.venue.models.VenueRequestDto
 import com.datelocator.datelocatorbe.venue.models.VenueResponseDto
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,13 +15,15 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
 @RestController
 @RequestMapping("/api/venues")
 class VenueController(
-    private val venueService: VenueService
+    private val venueService: VenueService,
+    private val venueMapper: VenueMapper
 ) {
     private val logger = LoggerFactory.getLogger(VenueController::class.java)
 
@@ -109,4 +112,18 @@ class VenueController(
     fun recommendedVenuesForUser(@RequestBody recommendedVenueRequestDto: RecommendedVenueRequestDto): ResponseEntity<List<VenueResponseDto>> {
         return ResponseEntity.ok(venueService.recommendedVenuesForUser(recommendedVenueRequestDto))
     }
+
+    @GetMapping("/search")
+    fun searchVenues(
+        @RequestParam name: String,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): Page<VenueResponseDto> {
+        logger.info("Searching venues with name: $name, page: $page, size: $size")
+        val venues = venueService.searchVenuesByName(name, page, size)
+        return venues.map { venue -> 
+            venueMapper.toResponseDto(venue, venue.preferences ?: emptySet())
+        }
+    }
+
 }

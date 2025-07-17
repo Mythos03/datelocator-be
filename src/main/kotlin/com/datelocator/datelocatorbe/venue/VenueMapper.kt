@@ -28,14 +28,14 @@ class VenueMapper(
         )
     }
 
-    fun toResponseDto(venue: Venue, validatedPreferences: Set<Preference>): VenueResponseDto {
+    fun toResponseDto(venue: Venue): VenueResponseDto {
         return VenueResponseDto(
             id = venue.id,
             name = venue.name,
             lat = venue.lat,
             lng = venue.lng,
             openingHours = venue.openingHours,
-            preferences = validatedPreferences.map { it.id.toString() }.toMutableSet(),
+            preferences = venue.map { it.id.toString() }.toMutableSet(),
             reviews = venue.reviews.map { ReviewMapper.toResponseDto(it) }.toMutableSet(),
             averageRating = venue.averageRating,
             reviewCount = venue.reviewCount,

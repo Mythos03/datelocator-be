@@ -1,6 +1,8 @@
 package com.datelocator.datelocatorbe.venue
 
 import com.datelocator.datelocatorbe.venue.models.Venue
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -40,4 +42,6 @@ interface VenueRepository : JpaRepository<Venue, UUID>{
         @Param("limit") limit: Int,
         @Param("offset") offset: Int
     ): List<Venue>
+
+    fun findByNameContainingIgnoreCase(name: String, pageable: Pageable): Page<Venue>
 }
