@@ -9,7 +9,7 @@ data class VenueResponseDto(
     val lng: Double,
     val lat: Double,
     val openingHours: OpeningHours? = null,
-    val preferences: MutableSet<String>? = mutableSetOf(),
+    val preferences: Set<UUID>? = emptySet(),
     val reviews: MutableSet<ReviewResponseDto>? = mutableSetOf(),
     val averageRating: Double,
     val reviewCount: Int,

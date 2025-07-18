@@ -7,12 +7,16 @@ import com.datelocator.datelocatorbe.user.models.User
 import com.datelocator.datelocatorbe.venue.models.Venue
 import com.datelocator.datelocatorbe.venue.models.VenueRequestDto
 import com.datelocator.datelocatorbe.venue.models.VenueResponseDto
+import com.datelocator.datelocatorbe.votes.VenuePreferenceVoteRepository
+import com.datelocator.datelocatorbe.votes.VenuePreferenceVoteService
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 class VenueMapper(
     private val openingHoursMapper: OpeningHoursMapper,
-    private val userService: UserService
+    private val userService: UserService,
+    private val venuePreferenceVoteService: VenuePreferenceVoteService,
 ){
     fun toEntity(venueRequestDto: VenueRequestDto, createdBy: User? = null): Venue {
         val user = venueRequestDto.userId?.let { userService.getUserEntityById(it) } ?: createdBy
@@ -35,7 +39,7 @@ class VenueMapper(
             lat = venue.lat,
             lng = venue.lng,
             openingHours = venue.openingHours,
-            preferences = venue.map { it.id.toString() }.toMutableSet(),
+            preferences = venuePreferenceVoteService.getPreferenceIdsByVenueId(venue.id),
             reviews = venue.reviews.map { ReviewMapper.toResponseDto(it) }.toMutableSet(),
             averageRating = venue.averageRating,
             reviewCount = venue.reviewCount,

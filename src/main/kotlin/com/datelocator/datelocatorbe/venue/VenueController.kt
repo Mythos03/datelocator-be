@@ -122,7 +122,7 @@ class VenueController(
         logger.info("Searching venues with name: $name, page: $page, size: $size")
         val venues = venueService.searchVenuesByName(name, page, size)
         return venues.map { venue -> 
-            venueMapper.toResponseDto(venue, venue.preferences ?: emptySet())
+            venueMapper.toResponseDto(venue)
         }
     }
 

@@ -2,7 +2,6 @@ package com.datelocator.datelocatorbe.venue
 
 import com.datelocator.datelocatorbe.preference.PreferenceService
 import com.datelocator.datelocatorbe.preference.models.Preference
-import com.datelocator.datelocatorbe.review.ReviewRepository
 import com.datelocator.datelocatorbe.user.UserService
 import com.datelocator.datelocatorbe.venue.models.RecommendedVenueRequestDto
 import com.datelocator.datelocatorbe.venue.models.UpdateVenuePreferencesDto
@@ -23,8 +22,7 @@ class VenueService(
     private val venueMapper: VenueMapper,
     private val preferenceService: PreferenceService,
     private val venuePreferenceVoteRepository: VenuePreferenceVoteRepository,
-    private val userService: UserService,
-    private val reviewRepository: ReviewRepository
+    private val userService: UserService
 ) {
     private val logger = LoggerFactory.getLogger(VenueService::class.java)
 
@@ -98,8 +96,8 @@ class VenueService(
 
     fun getVenueByGoogleId(googleId: String): VenueResponseDto? {
         val venue = venueRepository.findVenueByGooglePlacesId(googleId) ?: return null
-        val validatedPreferences = getValidatedPreferences(venue)
-        return venueMapper.toResponseDto(venue, validatedPreferences)
+        getValidatedPreferences(venue)
+        return venueMapper.toResponseDto(venue)
     }
 
     fun venueExistsByGoogleId(googleId: String): Boolean {
@@ -113,8 +111,8 @@ class VenueService(
         val venues = venueRepository.findRecommendedVenuesByProximityAndPreferences(recommendedVenueRequestDto.lat, recommendedVenueRequestDto.lng, preferenceIds, recommendedVenueRequestDto.minRating, recommendedVenueRequestDto.limit, recommendedVenueRequestDto.offset)
 
         return venues.map { venue ->
-            val validatedPreferences = getValidatedPreferences(venue)
-            venueMapper.toResponseDto(venue, validatedPreferences)
+            getValidatedPreferences(venue)
+            venueMapper.toResponseDto(venue)
         }
 
 
