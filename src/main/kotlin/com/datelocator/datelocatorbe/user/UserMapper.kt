@@ -1,12 +1,15 @@
 package com.datelocator.datelocatorbe.user
 
+import com.datelocator.datelocatorbe.preference.PreferenceMapper
 import com.datelocator.datelocatorbe.user.models.User
 import com.datelocator.datelocatorbe.user.models.UserRequestDto
 import com.datelocator.datelocatorbe.user.models.UserResponseDto
 import org.springframework.stereotype.Component
 
 @Component
-object UserMapper {
+class UserMapper (
+    private val preferenceMapper: PreferenceMapper
+) {
     fun toResponseDto(user: User): UserResponseDto {
         return UserResponseDto(
             firebaseUid = user.firebaseUid,
@@ -15,7 +18,7 @@ object UserMapper {
             lastName = user.lastName,
             gender = user.gender,
             age = user.age,
-            preferences = user.preferences.map { it.name }.toSet()
+            preferences = user.preferences.map { preferenceMapper.toResponseDto(it) }.toSet()
         )
     }
 

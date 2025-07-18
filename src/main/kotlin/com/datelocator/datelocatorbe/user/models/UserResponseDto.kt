@@ -1,5 +1,7 @@
 package com.datelocator.datelocatorbe.user.models
 
+import com.datelocator.datelocatorbe.preference.models.PreferenceResponseDto
+
 data class UserResponseDto (
     val firebaseUid: String,
     val username: String,
@@ -7,5 +9,5 @@ data class UserResponseDto (
     val lastName: String? = null,
     val gender: Genders?,
     val age: Int? = null,
-    val preferences: Set<String> = emptySet(),
+    val preferences: Set<PreferenceResponseDto> = emptySet(),
 )
