@@ -114,8 +114,6 @@ class VenueService(
             getValidatedPreferences(venue)
             venueMapper.toResponseDto(venue)
         }
-
-
     }
 
     fun searchVenuesByName(name: String, page: Int, size: Int): Page<Venue> {
