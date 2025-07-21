@@ -19,7 +19,7 @@ class UserService(
 
     fun getUserById(uid: String): UserResponseDto? {
         val user: User = userRepository.findById(uid).orElse(null) ?: return null
-        return UserMapper.toResponseDto(user)
+        return userMapper.toResponseDto(user)
     }
     fun getUserEntityById(uid: String): User? {
         return userRepository.findById(uid).orElse(null)
@@ -31,12 +31,12 @@ class UserService(
 
     fun findByUsername(username: String): UserResponseDto? {
         val user: User = userRepository.findByUsername(username) ?: return null
-        return UserMapper.toResponseDto(user)
+        return userMapper.toResponseDto(user)
     }
 
     fun getAllUsers(): List<UserResponseDto> {
         return userRepository.findAll().map { user: User ->
-            UserMapper.toResponseDto(user)
+            userMapper.toResponseDto(user)
         }
     }
 
@@ -48,6 +48,6 @@ class UserService(
         user.preferences.addAll(preferenceEntities)
 
         val savedUser: User = userRepository.save(user)
-        return UserMapper.toResponseDto(savedUser)
+        return userMapper.toResponseDto(savedUser)
     }
 }
