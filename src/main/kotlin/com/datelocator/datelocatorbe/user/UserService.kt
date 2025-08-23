@@ -2,6 +2,7 @@ package com.datelocator.datelocatorbe.user
 
 import com.datelocator.datelocatorbe.preference.models.Preference
 import com.datelocator.datelocatorbe.preference.PreferenceRepository
+import com.datelocator.datelocatorbe.user.models.CreatePartialUserDto
 import com.datelocator.datelocatorbe.user.models.User
 import com.datelocator.datelocatorbe.user.models.UserRequestDto
 import com.datelocator.datelocatorbe.user.models.UserResponseDto
@@ -49,5 +50,9 @@ class UserService(
 
         val savedUser: User = userRepository.save(user)
         return userMapper.toResponseDto(savedUser)
+    }
+
+    fun createPartialUser(requestDto: CreatePartialUserDto): User {
+        return userRepository.save(userMapper.partialUserToUser(requestDto))
     }
 }

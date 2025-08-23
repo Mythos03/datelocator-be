@@ -31,6 +31,8 @@ data class User(
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     val reviews: MutableSet<Review> = mutableSetOf(),
 
+    val isComplete: Boolean = false,
+
     ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

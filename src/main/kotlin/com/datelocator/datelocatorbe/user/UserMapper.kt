@@ -1,6 +1,7 @@
 package com.datelocator.datelocatorbe.user
 
 import com.datelocator.datelocatorbe.preference.PreferenceMapper
+import com.datelocator.datelocatorbe.user.models.CreatePartialUserDto
 import com.datelocator.datelocatorbe.user.models.User
 import com.datelocator.datelocatorbe.user.models.UserRequestDto
 import com.datelocator.datelocatorbe.user.models.UserResponseDto
@@ -30,6 +31,12 @@ class UserMapper (
             lastName = userRequestDto.lastName,
             gender = userRequestDto.gender,
             age = userRequestDto.age,
+        )
+    }
+
+    fun partialUserToUser(createPartialUserDto: CreatePartialUserDto): User {
+        return User(
+            firebaseUid = createPartialUserDto.firebaseUid,
         )
     }
 }
