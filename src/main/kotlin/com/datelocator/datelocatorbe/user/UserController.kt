@@ -1,5 +1,6 @@
 package com.datelocator.datelocatorbe.user
 
+import com.datelocator.datelocatorbe.user.models.CreatePartialUserDto
 import com.datelocator.datelocatorbe.user.models.UpdateUserPreferencesRequest
 import com.datelocator.datelocatorbe.user.models.User
 import com.datelocator.datelocatorbe.user.models.UserRequestDto
@@ -21,9 +22,9 @@ class UserController(
         else ResponseEntity.notFound().build()
     }
 
-    @PostMapping
-    fun createUser(@RequestBody user: UserRequestDto): ResponseEntity<UserResponseDto> {
-        val savedUser = userService.createUser(user)
+    @PutMapping("/{firebaseUid}")
+    fun createUser(@PathVariable firebaseUid: String, @RequestBody user: UserRequestDto): ResponseEntity<UserResponseDto> {
+        val savedUser = userService.updateUser(user, firebaseUid)
         return ResponseEntity.ok(userMapper.toResponseDto(savedUser))
     }
 
@@ -47,5 +48,11 @@ class UserController(
         val updatedUser = userService.updateUserPreferences(uid, request.preferences)
         return if (updatedUser != null) ResponseEntity.ok(updatedUser)
         else ResponseEntity.notFound().build()
+    }
+
+    @PostMapping
+    fun createPartialUser(@RequestBody partialUser: CreatePartialUserDto): ResponseEntity<UserResponseDto> {
+        val user = userService.createPartialUser(partialUser)
+        return ResponseEntity.ok(userMapper.toResponseDto(user))
     }
 }

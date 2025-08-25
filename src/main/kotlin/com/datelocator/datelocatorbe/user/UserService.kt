@@ -26,8 +26,8 @@ class UserService(
         return userRepository.findById(uid).orElse(null)
     }
 
-    fun createUser(user: UserRequestDto): User {
-        return userRepository.save(userMapper.userRequestDtoToUser(user))
+    fun updateUser(user: UserRequestDto, firebaseUid: String): User {
+        var user = userRepository.findById(firebaseUid)
     }
 
     fun findByUsername(username: String): UserResponseDto? {
