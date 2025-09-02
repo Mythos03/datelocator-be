@@ -26,10 +26,6 @@ class UserService(
         return userRepository.findById(uid).orElse(null)
     }
 
-    fun createUser(user: UserRequestDto): User {
-        return userRepository.save(userMapper.userRequestDtoToUser(user))
-    }
-
     fun findByUsername(username: String): UserResponseDto? {
         val user: User = userRepository.findByUsername(username) ?: return null
         return userMapper.toResponseDto(user)
@@ -54,5 +50,24 @@ class UserService(
 
     fun createPartialUser(requestDto: CreatePartialUserDto): User {
         return userRepository.save(userMapper.partialUserToUser(requestDto))
+    }
+
+    fun updatePartialUser(requestDto: UserRequestDto): UserResponseDto? {
+        val existingUser = userRepository.findById(requestDto.firebaseUid).orElse(null)
+
+        if (existingUser == null) {
+            return null
+        } else {
+            val updatedUser = existingUser.copy(
+                username = requestDto.username,
+                firstName = requestDto.firstName,
+                lastName = requestDto.lastName,
+                gender =  requestDto.gender,
+                age = requestDto.age,
+                preferences = preferenceRepository.findAllById(requestDto.preferenceIds).toMutableSet())
+
+            val savedUser = userRepository.save(updatedUser)
+            return userMapper.toResponseDto(savedUser)
+        }
     }
 }
