@@ -38,7 +38,9 @@ class UserService(
                 lastName = requestDto.lastName,
                 gender = requestDto.gender,
                 age = requestDto.age,
-                preferences = preferenceRepository.findAllById(requestDto.preferenceIds).toMutableSet()
+                preferences = preferenceRepository.findAllById(requestDto.preferenceIds).toMutableSet(),
+                isComplete = true,
+                firebaseUid = requestDto.firebaseUid
             )
 
             val savedUser = userRepository.save(updatedUser)
