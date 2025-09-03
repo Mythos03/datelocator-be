@@ -2,7 +2,6 @@ package com.datelocator.datelocatorbe.user
 
 import com.datelocator.datelocatorbe.user.models.CreatePartialUserDto
 import com.datelocator.datelocatorbe.user.models.UpdateUserPreferencesRequest
-import com.datelocator.datelocatorbe.user.models.User
 import com.datelocator.datelocatorbe.user.models.UserRequestDto
 import com.datelocator.datelocatorbe.user.models.UserResponseDto
 import org.springframework.http.ResponseEntity
@@ -22,10 +21,17 @@ class UserController(
         else ResponseEntity.notFound().build()
     }
 
-    @PutMapping("/{firebaseUid}")
-    fun createUser(@PathVariable firebaseUid: String, @RequestBody user: UserRequestDto): ResponseEntity<UserResponseDto> {
-        val savedUser = userService.updateUser(user, firebaseUid)
+    @PostMapping
+    fun createPartialUser(@RequestBody user: CreatePartialUserDto): ResponseEntity<UserResponseDto> {
+        val savedUser = userService.createPartialUser(user)
         return ResponseEntity.ok(userMapper.toResponseDto(savedUser))
+    }
+
+    @PutMapping
+    fun updatePartialUser(@RequestBody user: UserRequestDto): ResponseEntity<UserResponseDto> {
+        val updatedUser = userService.updatePartialUser(user)
+        return if (updatedUser != null) ResponseEntity.ok(updatedUser)
+        else ResponseEntity.notFound().build()
     }
 
     @GetMapping
@@ -48,11 +54,5 @@ class UserController(
         val updatedUser = userService.updateUserPreferences(uid, request.preferences)
         return if (updatedUser != null) ResponseEntity.ok(updatedUser)
         else ResponseEntity.notFound().build()
-    }
-
-    @PostMapping
-    fun createPartialUser(@RequestBody partialUser: CreatePartialUserDto): ResponseEntity<UserResponseDto> {
-        val user = userService.createPartialUser(partialUser)
-        return ResponseEntity.ok(userMapper.toResponseDto(user))
     }
 }
