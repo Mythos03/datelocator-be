@@ -1,5 +1,6 @@
 package com.datelocator.datelocatorbe.user.models
 
+import com.datelocator.datelocatorbe.image.models.Image
 import com.datelocator.datelocatorbe.preference.models.Preference
 import com.datelocator.datelocatorbe.review.models.Review
 import jakarta.persistence.*
@@ -32,6 +33,10 @@ data class User(
     val reviews: MutableSet<Review> = mutableSetOf(),
 
     val isComplete: Boolean = false,
+    
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    var image: Image? = null
 
     ) {
     override fun equals(other: Any?): Boolean {

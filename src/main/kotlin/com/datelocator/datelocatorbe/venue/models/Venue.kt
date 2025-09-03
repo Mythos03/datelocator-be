@@ -1,5 +1,6 @@
 package com.datelocator.datelocatorbe.venue.models
 
+import com.datelocator.datelocatorbe.image.models.Image
 import com.datelocator.datelocatorbe.review.models.Review
 import com.datelocator.datelocatorbe.user.models.User
 import jakarta.persistence.*
@@ -34,7 +35,11 @@ data class Venue(
     var averageRating: Double = 0.0,
 
     @Column(name = "review_count", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
-    var reviewCount: Int = 0
+    var reviewCount: Int = 0,
+
+    @OneToMany(mappedBy = "venue", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    val images: MutableSet<Image> = mutableSetOf(),
+
 ) {
     fun addReview(review: Review) {
         reviews.add(review)

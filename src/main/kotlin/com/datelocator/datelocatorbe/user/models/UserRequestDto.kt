@@ -10,4 +10,5 @@ data class UserRequestDto(
     val gender: Genders,
     val preferenceIds: Set<UUID> = emptySet(),
     val age: Int,
+    val imageDownloadUrl: String,
 )
