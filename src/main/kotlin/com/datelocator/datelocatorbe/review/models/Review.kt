@@ -14,6 +14,7 @@ import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
+import org.hibernate.annotations.Where
 import java.util.UUID
 
 @Entity
@@ -40,6 +41,13 @@ data class Review(
     inverseJoinColumns = [JoinColumn(name = "preference_id")])
     val preferences: MutableSet<Preference> = mutableSetOf(),
 
-    @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JoinColumn(
+        name = "entityId", // The column in the 'images' table
+        referencedColumnName = "id", // The column in this 'reviews' table
+        insertable = false, // This relationship is read-only from the Review side
+        updatable = false
+    )
+    @Where(clause = "entityType = 'REVIEW'") // Filter images for this specific entity type
     val images: MutableSet<Image> = mutableSetOf()
 )

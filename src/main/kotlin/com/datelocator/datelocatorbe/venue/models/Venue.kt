@@ -4,6 +4,7 @@ import com.datelocator.datelocatorbe.image.models.Image
 import com.datelocator.datelocatorbe.review.models.Review
 import com.datelocator.datelocatorbe.user.models.User
 import jakarta.persistence.*
+import org.hibernate.annotations.Where
 import java.time.Instant
 import java.util.*
 
@@ -37,7 +38,14 @@ data class Venue(
     @Column(name = "review_count", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     var reviewCount: Int = 0,
 
-    @OneToMany(mappedBy = "venue", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JoinColumn(
+        name = "entityId", // The column in the 'images' table
+        referencedColumnName = "id", // The column in this 'venues' table
+        insertable = false,
+        updatable = false
+    )
+    @Where(clause = "entityType = 'VENUE'") // Filter images for this specific entity type
     val images: MutableSet<Image> = mutableSetOf(),
 
 ) {

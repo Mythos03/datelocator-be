@@ -4,6 +4,7 @@ import com.datelocator.datelocatorbe.image.models.Image
 import com.datelocator.datelocatorbe.preference.models.Preference
 import com.datelocator.datelocatorbe.review.models.Review
 import jakarta.persistence.*
+import org.hibernate.annotations.Where
 import java.time.LocalDateTime
 
 @Entity
@@ -11,12 +12,12 @@ import java.time.LocalDateTime
 data class User(
     @Id
     val firebaseUid: String,
-    val username: String? = null,
-    val firstName: String? = null,
-    val lastName: String? = null,
+    var username: String? = null,
+    var firstName: String? = null,
+    var lastName: String? = null,
 
     @Enumerated(EnumType.ORDINAL)
-    val gender: Genders? = null,
+    var gender: Genders? = null,
 
     @ManyToMany
     @JoinTable(
@@ -26,16 +27,22 @@ data class User(
     )
     var preferences: MutableSet<Preference> = mutableSetOf(),
 
-    val age: Int? = null,
+    var age: Int? = null,
     val createdAt: LocalDateTime = LocalDateTime.now(),
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     val reviews: MutableSet<Review> = mutableSetOf(),
 
-    val isComplete: Boolean = false,
-    
+    var isComplete: Boolean = false,
+
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    @JoinColumn(
+        name = "entityId", // The column in the 'images' table
+        referencedColumnName = "firebaseUid", // The column in this 'users' table (Note: it's not 'id')
+        insertable = false,
+        updatable = false
+    )
+    @Where(clause = "entityType = 'USER'") // Filter images for the 'USER' type
     var image: Image? = null
 
     ) {

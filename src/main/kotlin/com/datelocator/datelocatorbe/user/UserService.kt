@@ -1,5 +1,7 @@
 package com.datelocator.datelocatorbe.user
 
+import com.datelocator.datelocatorbe.image.models.EntityType
+import com.datelocator.datelocatorbe.image.models.Image
 import com.datelocator.datelocatorbe.preference.models.Preference
 import com.datelocator.datelocatorbe.preference.PreferenceRepository
 import com.datelocator.datelocatorbe.user.models.CreatePartialUserDto
@@ -8,6 +10,8 @@ import com.datelocator.datelocatorbe.user.models.UserRequestDto
 import com.datelocator.datelocatorbe.user.models.UserResponseDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.sql.Date
+import java.time.Instant
 import java.util.UUID
 
 @Service
@@ -28,24 +32,22 @@ class UserService(
 
     fun updatePartialUser(requestDto: UserRequestDto): UserResponseDto? {
         val existingUser = userRepository.findById(requestDto.firebaseUid).orElse(null)
+            ?: return null
 
-        if (existingUser == null) {
-            return null
-        } else {
-            val updatedUser = existingUser.copy(
-                username = requestDto.username,
-                firstName = requestDto.firstName,
-                lastName = requestDto.lastName,
-                gender = requestDto.gender,
-                age = requestDto.age,
-                preferences = preferenceRepository.findAllById(requestDto.preferenceIds).toMutableSet(),
-                isComplete = true,
-                firebaseUid = requestDto.firebaseUid
-            )
+        existingUser.username = requestDto.username
+        existingUser.firstName = requestDto.firstName
+        existingUser.lastName = requestDto.lastName
+        existingUser.gender = requestDto.gender
+        existingUser.age = requestDto.age
+        existingUser.preferences = preferenceRepository.findAllById(requestDto.preferenceIds).toMutableSet()
+        existingUser.isComplete = true
+        existingUser.image = Image(
+            imageUrl = requestDto.imageDownloadUrl,
+            entityId = existingUser.firebaseUid,
+            entityType = EntityType.USER,
+        )
 
-            val savedUser = userRepository.save(updatedUser)
-            return userMapper.toResponseDto(savedUser)
-        }
+        return userMapper.toResponseDto(existingUser)
     }
 
     fun findByUsername(username: String): UserResponseDto? {

@@ -18,13 +18,10 @@ class Image(
     @Column(nullable = false)
     val imageUrl: String,
 
-    @Column(nullable = false)
-    val entityId: UUID,
+    @Column(name = "entity_id",nullable = false)
+    val entityId: String,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     val entityType: EntityType,
-
-    @Column(nullable = false)
-    val createdAt: Date
 )
