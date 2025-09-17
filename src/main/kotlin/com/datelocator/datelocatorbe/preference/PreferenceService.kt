@@ -4,7 +4,7 @@ import com.datelocator.datelocatorbe.preference.models.Preference
 import com.datelocator.datelocatorbe.preference.models.PreferenceRequestDto
 import com.datelocator.datelocatorbe.preference.models.PreferenceResponseDto
 import org.springframework.stereotype.Service
-import java.util.UUID
+import java.util.*
 
 @Service
 class PreferenceService(

@@ -8,7 +8,7 @@ import com.datelocator.datelocatorbe.user.UserService
 import com.datelocator.datelocatorbe.venue.VenueService
 import com.datelocator.datelocatorbe.venue.models.UpdateVenuePreferencesDto
 import org.springframework.stereotype.Service
-import java.util.UUID
+import java.util.*
 
 @Service
 class ReviewService(

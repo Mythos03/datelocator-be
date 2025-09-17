@@ -1,16 +1,13 @@
 package com.datelocator.datelocatorbe.venue
 
-import com.datelocator.datelocatorbe.preference.models.Preference
 import com.datelocator.datelocatorbe.review.ReviewMapper
 import com.datelocator.datelocatorbe.user.UserService
 import com.datelocator.datelocatorbe.user.models.User
 import com.datelocator.datelocatorbe.venue.models.Venue
 import com.datelocator.datelocatorbe.venue.models.VenueRequestDto
 import com.datelocator.datelocatorbe.venue.models.VenueResponseDto
-import com.datelocator.datelocatorbe.votes.VenuePreferenceVoteRepository
 import com.datelocator.datelocatorbe.votes.VenuePreferenceVoteService
 import org.springframework.stereotype.Component
-import java.util.UUID
 
 @Component
 class VenueMapper(

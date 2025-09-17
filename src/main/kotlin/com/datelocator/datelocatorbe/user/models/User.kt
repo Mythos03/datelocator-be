@@ -4,10 +4,9 @@ import com.datelocator.datelocatorbe.image.models.Image
 import com.datelocator.datelocatorbe.preference.models.Preference
 import com.datelocator.datelocatorbe.review.models.Review
 import jakarta.persistence.*
-import org.hibernate.annotations.JoinFormula
 import org.hibernate.annotations.Where
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 @Entity
 @Table(name = "users")

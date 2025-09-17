@@ -1,7 +1,7 @@
 package com.datelocator.datelocatorbe.venue.models
 
 import com.datelocator.datelocatorbe.review.models.ReviewResponseDto
-import java.util.UUID
+import java.util.*
 
 data class VenueResponseDto(
     val id: UUID,

@@ -1,6 +1,6 @@
 package com.datelocator.datelocatorbe.user.models
 
-import java.util.UUID
+import java.util.*
 
 data class UserRequestDto(
     val firebaseUid: String,

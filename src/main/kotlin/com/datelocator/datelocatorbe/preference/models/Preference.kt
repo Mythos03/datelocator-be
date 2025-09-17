@@ -1,10 +1,12 @@
 package com.datelocator.datelocatorbe.preference.models
 
 import com.datelocator.datelocatorbe.user.models.User
-import com.datelocator.datelocatorbe.venue.models.Venue
 import io.swagger.v3.oas.annotations.media.Schema
-import jakarta.persistence.*
-import java.util.UUID
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.ManyToMany
+import jakarta.persistence.Table
+import java.util.*
 
 @Entity
 @Table(name = "preferences")

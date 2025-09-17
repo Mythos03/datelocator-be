@@ -3,18 +3,14 @@ package com.datelocator.datelocatorbe.venue
 import com.datelocator.datelocatorbe.preference.PreferenceService
 import com.datelocator.datelocatorbe.preference.models.Preference
 import com.datelocator.datelocatorbe.user.UserService
-import com.datelocator.datelocatorbe.venue.models.RecommendedVenueRequestDto
-import com.datelocator.datelocatorbe.venue.models.UpdateVenuePreferencesDto
-import com.datelocator.datelocatorbe.venue.models.Venue
-import com.datelocator.datelocatorbe.venue.models.VenueRequestDto
-import com.datelocator.datelocatorbe.venue.models.VenueResponseDto
+import com.datelocator.datelocatorbe.venue.models.*
 import com.datelocator.datelocatorbe.votes.VenuePreferenceVote
 import com.datelocator.datelocatorbe.votes.VenuePreferenceVoteRepository
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
-import java.util.UUID
+import java.util.*
 
 @Service
 class VenueService(

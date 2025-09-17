@@ -1,8 +1,6 @@
 package com.datelocator.datelocatorbe.review
 
-import com.datelocator.datelocatorbe.review.models.Review
 import com.datelocator.datelocatorbe.review.models.ReviewRequestDto
-import com.datelocator.datelocatorbe.review.models.ReviewResponseDto
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

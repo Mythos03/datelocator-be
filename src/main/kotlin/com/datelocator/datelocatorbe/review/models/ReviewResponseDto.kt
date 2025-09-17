@@ -1,6 +1,6 @@
 package com.datelocator.datelocatorbe.review.models
 
-import java.util.UUID
+import java.util.*
 
 data class ReviewResponseDto(
     val id: UUID,

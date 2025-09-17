@@ -2,17 +2,15 @@ package com.datelocator.datelocatorbe.user
 
 import com.datelocator.datelocatorbe.image.models.EntityType
 import com.datelocator.datelocatorbe.image.models.Image
-import com.datelocator.datelocatorbe.preference.models.Preference
 import com.datelocator.datelocatorbe.preference.PreferenceRepository
+import com.datelocator.datelocatorbe.preference.models.Preference
 import com.datelocator.datelocatorbe.user.models.CreatePartialUserDto
 import com.datelocator.datelocatorbe.user.models.User
 import com.datelocator.datelocatorbe.user.models.UserRequestDto
 import com.datelocator.datelocatorbe.user.models.UserResponseDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.sql.Date
-import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 @Service
 @Transactional
