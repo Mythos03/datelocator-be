@@ -19,7 +19,7 @@ class Image(
     val imageUrl: String,
 
     @Column(name = "entity_id",nullable = false)
-    val entityId: String,
+    val entityId: UUID,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

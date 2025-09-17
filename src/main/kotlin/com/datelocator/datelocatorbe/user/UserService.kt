@@ -23,15 +23,15 @@ class UserService(
 ) {
 
     fun getUserById(uid: String): UserResponseDto? {
-        val user: User = userRepository.findById(uid).orElse(null) ?: return null
+        val user: User = userRepository.findByfirebaseUid(uid) ?: return null
         return userMapper.toResponseDto(user)
     }
     fun getUserEntityById(uid: String): User? {
-        return userRepository.findById(uid).orElse(null)
+        return userRepository.findByfirebaseUid(uid)
     }
 
     fun updatePartialUser(requestDto: UserRequestDto): UserResponseDto? {
-        val existingUser = userRepository.findById(requestDto.firebaseUid).orElse(null)
+        val existingUser = userRepository.findByfirebaseUid(requestDto.firebaseUid)
             ?: return null
 
         existingUser.username = requestDto.username
@@ -43,7 +43,7 @@ class UserService(
         existingUser.isComplete = true
         existingUser.image = Image(
             imageUrl = requestDto.imageDownloadUrl,
-            entityId = existingUser.firebaseUid,
+            entityId = existingUser.id,
             entityType = EntityType.USER,
         )
 
@@ -62,7 +62,7 @@ class UserService(
     }
 
     fun updateUserPreferences(uid: String, preferenceIds: Set<UUID>): UserResponseDto? {
-        val user: User = userRepository.findById(uid).orElse(null) ?: return null
+        val user: User = userRepository.findByfirebaseUid(uid) ?: return null
         val preferenceEntities: Set<Preference> = preferenceRepository.findAllById(preferenceIds).toSet()
 
         user.preferences.clear()

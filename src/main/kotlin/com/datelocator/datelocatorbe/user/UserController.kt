@@ -14,8 +14,8 @@ class UserController(
     private val userMapper: UserMapper
 ) {
 
-    @GetMapping("/{uid}")
-    fun getUserById(@PathVariable uid: String): ResponseEntity<UserResponseDto> {
+    @GetMapping("/firebase/{uid}")
+    fun getUserByFirebaseUid(@PathVariable uid: String): ResponseEntity<UserResponseDto> {
         val user = userService.getUserById(uid)
         return if (user != null) ResponseEntity.ok(user)
         else ResponseEntity.notFound().build()
@@ -46,13 +46,23 @@ class UserController(
         else ResponseEntity.notFound().build()
     }
 
-    @PutMapping("/{uid}/preferences")
-    fun updateUserPreferences(
+    @PutMapping("/firebase/{uid}/preferences")
+    fun updateUserPreferencesByFirebaseUid(
         @PathVariable uid: String,
         @RequestBody request: UpdateUserPreferencesRequest
     ): ResponseEntity<UserResponseDto> {
         val updatedUser = userService.updateUserPreferences(uid, request.preferences)
         return if (updatedUser != null) ResponseEntity.ok(updatedUser)
         else ResponseEntity.notFound().build()
+    }
+
+    @PutMapping("/{firebaseUid}/preferences")
+    fun updateUserPreferences(
+        @PathVariable firebaseUid: String,
+        @RequestBody request: UpdateUserPreferencesRequest
+    ): ResponseEntity<UserResponseDto> {
+        val updatedUser = userService.updateUserPreferences(firebaseUid, request.preferences)
+        return if (updatedUser != null) ResponseEntity.ok(updatedUser)
+        else ResponseEntity.notFound().build<UserResponseDto>()
     }
 }

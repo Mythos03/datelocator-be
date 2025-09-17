@@ -40,13 +40,11 @@ data class Venue(
 
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(
-        name = "entityId", // The column in the 'images' table
-        referencedColumnName = "id", // The column in this 'venues' table
-        insertable = false,
-        updatable = false
+        name = "entity_id",
+        referencedColumnName = "id",
     )
-    @Where(clause = "entityType = 'VENUE'") // Filter images for this specific entity type
-    val images: MutableSet<Image> = mutableSetOf(),
+    @Where(clause = "entity_type = 'VENUE'")
+    val images: MutableSet<Image> = mutableSetOf()
 
 ) {
     fun addReview(review: Review) {

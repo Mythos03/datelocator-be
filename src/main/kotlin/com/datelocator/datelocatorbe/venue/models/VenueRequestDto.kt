@@ -8,5 +8,5 @@ data class VenueRequestDto(
     val lat: Double,
     val lng: Double,
     val openingHoursRequestDto: OpeningHoursRequestDto? = null,
-    val userId: String? = null
+    val firebaseUid: String? = null
 )

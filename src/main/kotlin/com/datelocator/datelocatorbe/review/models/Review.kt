@@ -43,11 +43,9 @@ data class Review(
 
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(
-        name = "entityId", // The column in the 'images' table
-        referencedColumnName = "id", // The column in this 'reviews' table
-        insertable = false, // This relationship is read-only from the Review side
-        updatable = false
+        name = "entity_id",        // in images table
+        referencedColumnName = "id",
     )
-    @Where(clause = "entityType = 'REVIEW'") // Filter images for this specific entity type
+    @Where(clause = "entity_type = 'REVIEW'")
     val images: MutableSet<Image> = mutableSetOf()
 )

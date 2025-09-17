@@ -35,7 +35,7 @@ class VenueService(
             logger.info("Starting venue creation with data: $venueRequestDto")
 
 
-            val createdBy = venueRequestDto.userId?.let { userId ->
+            val createdBy = venueRequestDto.firebaseUid?.let { userId ->
                 userService.getUserEntityById(userId)
             }
 
@@ -62,7 +62,7 @@ class VenueService(
                             .findByVenueIdAndPreferenceId(venue.id, preferenceId)
 
                         if (existingVote == null) {
-                            val user = userService.getUserEntityById(updateVenuePreferencesDto.userId)
+                            val user = userService.getUserEntityById(updateVenuePreferencesDto.firebaseUid)
                                 ?: throw IllegalArgumentException("User not found")
                             val vote = VenuePreferenceVote(
                                 venue = venue,
@@ -106,7 +106,7 @@ class VenueService(
     }
 
     fun recommendedVenuesForUser(recommendedVenueRequestDto: RecommendedVenueRequestDto): List<VenueResponseDto> {
-        val preferenceIds = preferenceService.returnPreferenceIdsByUserId(recommendedVenueRequestDto.userId)
+        val preferenceIds = preferenceService.returnPreferenceIdsByUserId(recommendedVenueRequestDto.firebaseUid)
 
         val venues = venueRepository.findRecommendedVenuesByProximityAndPreferences(recommendedVenueRequestDto.lat, recommendedVenueRequestDto.lng, preferenceIds, recommendedVenueRequestDto.minRating, recommendedVenueRequestDto.limit, recommendedVenueRequestDto.offset)
 
