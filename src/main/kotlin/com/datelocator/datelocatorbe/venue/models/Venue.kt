@@ -4,7 +4,6 @@ import com.datelocator.datelocatorbe.image.models.Image
 import com.datelocator.datelocatorbe.review.models.Review
 import com.datelocator.datelocatorbe.user.models.User
 import jakarta.persistence.*
-import org.hibernate.annotations.ForeignKey
 import org.hibernate.annotations.Where
 import java.time.Instant
 import java.util.*
