@@ -39,11 +39,14 @@ class UserService(
         existingUser.age = requestDto.age
         existingUser.preferences = preferenceRepository.findAllById(requestDto.preferenceIds).toMutableSet()
         existingUser.isComplete = true
-        existingUser.image = Image(
-            imageUrl = requestDto.imageDownloadUrl,
-            entityId = existingUser.id,
-            entityType = EntityType.USER,
-        )
+        existingUser.image = requestDto.imageDownloadUrl?.let {
+            Image(
+                imageUrl = it,
+                entityId = existingUser.id,
+                entityType = EntityType.USER
+            )
+        }
+        userRepository.save(existingUser)
 
         return userMapper.toResponseDto(existingUser)
     }

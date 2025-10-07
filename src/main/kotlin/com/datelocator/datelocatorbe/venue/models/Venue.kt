@@ -4,6 +4,7 @@ import com.datelocator.datelocatorbe.image.models.Image
 import com.datelocator.datelocatorbe.review.models.Review
 import com.datelocator.datelocatorbe.user.models.User
 import jakarta.persistence.*
+import org.hibernate.annotations.ForeignKey
 import org.hibernate.annotations.Where
 import java.time.Instant
 import java.util.*
@@ -42,15 +43,12 @@ data class Venue(
     @JoinColumn(
         name = "entity_id",
         referencedColumnName = "id",
+        foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT)
     )
     @Where(clause = "entity_type = 'VENUE'")
     val images: MutableSet<Image> = mutableSetOf()
 
 ) {
-    fun addReview(review: Review) {
-        reviews.add(review)
-        review.venue = this
-    }
 
     override fun hashCode(): Int {
         return id.hashCode()

@@ -14,6 +14,7 @@ data class User(
     @Id
     val id: UUID = UUID.randomUUID(),
 
+    @Column(nullable = false, unique = true)
     val firebaseUid: String,
     var username: String? = null,
     var firstName: String? = null,
@@ -40,7 +41,7 @@ data class User(
     var isComplete: Boolean = false,
 
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-    @JoinColumn(name = "entity_id", referencedColumnName = "id")
+    @JoinColumn(name = "entity_id", referencedColumnName = "id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     @Where(clause = "entity_type = 'USER'")
     var image: Image? = null
 

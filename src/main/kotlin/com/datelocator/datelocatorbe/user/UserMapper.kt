@@ -19,7 +19,8 @@ class UserMapper (
             lastName = user.lastName,
             gender = user.gender,
             age = user.age,
-            preferences = user.preferences.map { preferenceMapper.toResponseDto(it) }.toSet()
+            preferences = user.preferences.map { preferenceMapper.toResponseDto(it) }.toSet(),
+            imageUrl = user.image?.imageUrl,
         )
     }
 

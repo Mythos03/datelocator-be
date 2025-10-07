@@ -55,14 +55,4 @@ class UserController(
         return if (updatedUser != null) ResponseEntity.ok(updatedUser)
         else ResponseEntity.notFound().build()
     }
-
-    @PutMapping("/{firebaseUid}/preferences")
-    fun updateUserPreferences(
-        @PathVariable firebaseUid: String,
-        @RequestBody request: UpdateUserPreferencesRequest
-    ): ResponseEntity<UserResponseDto> {
-        val updatedUser = userService.updateUserPreferences(firebaseUid, request.preferences)
-        return if (updatedUser != null) ResponseEntity.ok(updatedUser)
-        else ResponseEntity.notFound().build<UserResponseDto>()
-    }
 }

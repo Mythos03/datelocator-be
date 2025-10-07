@@ -34,8 +34,9 @@ data class Review(
 
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(
-        name = "entity_id",        // in images table
+        name = "entity_id",
         referencedColumnName = "id",
+        foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT)
     )
     @Where(clause = "entity_type = 'REVIEW'")
     val images: MutableSet<Image> = mutableSetOf()
