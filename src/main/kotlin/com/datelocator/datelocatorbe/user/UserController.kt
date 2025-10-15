@@ -2,6 +2,7 @@ package com.datelocator.datelocatorbe.user
 
 import com.datelocator.datelocatorbe.user.models.CreatePartialUserDto
 import com.datelocator.datelocatorbe.user.models.UpdateUserPreferencesRequest
+import com.datelocator.datelocatorbe.user.models.UpdateUserRequestDto
 import com.datelocator.datelocatorbe.user.models.UserRequestDto
 import com.datelocator.datelocatorbe.user.models.UserResponseDto
 import org.springframework.http.ResponseEntity
@@ -52,6 +53,16 @@ class UserController(
         @RequestBody request: UpdateUserPreferencesRequest
     ): ResponseEntity<UserResponseDto> {
         val updatedUser = userService.updateUserPreferences(uid, request.preferences)
+        return if (updatedUser != null) ResponseEntity.ok(updatedUser)
+        else ResponseEntity.notFound().build()
+    }
+
+    @PutMapping("/{firebaseUid}")
+    fun updateUser(
+        @PathVariable firebaseUid: String,
+        @RequestBody updateUserRequestDto: UpdateUserRequestDto
+    ): ResponseEntity<UserResponseDto> {
+        val updatedUser = userService.updateUser(firebaseUid, updateUserRequestDto)
         return if (updatedUser != null) ResponseEntity.ok(updatedUser)
         else ResponseEntity.notFound().build()
     }

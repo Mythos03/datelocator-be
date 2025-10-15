@@ -5,6 +5,7 @@ import com.datelocator.datelocatorbe.image.models.Image
 import com.datelocator.datelocatorbe.preference.PreferenceRepository
 import com.datelocator.datelocatorbe.preference.models.Preference
 import com.datelocator.datelocatorbe.user.models.CreatePartialUserDto
+import com.datelocator.datelocatorbe.user.models.UpdateUserRequestDto
 import com.datelocator.datelocatorbe.user.models.User
 import com.datelocator.datelocatorbe.user.models.UserRequestDto
 import com.datelocator.datelocatorbe.user.models.UserResponseDto
@@ -75,5 +76,20 @@ class UserService(
 
     fun createPartialUser(requestDto: CreatePartialUserDto): User {
         return userRepository.save(userMapper.partialUserToUser(requestDto))
+    }
+
+    fun updateUser(firebaseUid: String, updateUserRequestDto: UpdateUserRequestDto): UserResponseDto? {
+        val existingUser = userRepository.findByfirebaseUid(firebaseUid)
+            ?: return null
+
+        existingUser.username = updateUserRequestDto.username
+        existingUser.firstName = updateUserRequestDto.firstName
+        existingUser.lastName = updateUserRequestDto.lastName
+        existingUser.gender = updateUserRequestDto.gender
+        existingUser.age = updateUserRequestDto.age
+
+        userRepository.save(existingUser)
+
+        return userMapper.toResponseDto(existingUser)
     }
 }
