@@ -38,7 +38,6 @@ class UserService(
         existingUser.lastName = requestDto.lastName
         existingUser.gender = requestDto.gender
         existingUser.age = requestDto.age
-        existingUser.preferences = preferenceRepository.findAllById(requestDto.preferenceIds).toMutableSet()
         existingUser.isComplete = true
         existingUser.image = requestDto.imageDownloadUrl?.let {
             Image(
