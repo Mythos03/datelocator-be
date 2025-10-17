@@ -1,6 +1,7 @@
 package com.datelocator.datelocatorbe.user
 
 import com.datelocator.datelocatorbe.user.models.CreatePartialUserDto
+import com.datelocator.datelocatorbe.user.models.UpdateProfilePictureDto
 import com.datelocator.datelocatorbe.user.models.UpdateUserPreferencesRequest
 import com.datelocator.datelocatorbe.user.models.UpdateUserRequestDto
 import com.datelocator.datelocatorbe.user.models.UserRequestDto
@@ -63,6 +64,13 @@ class UserController(
         @RequestBody updateUserRequestDto: UpdateUserRequestDto
     ): ResponseEntity<UserResponseDto> {
         val updatedUser = userService.updateUser(firebaseUid, updateUserRequestDto)
+        return if (updatedUser != null) ResponseEntity.ok(updatedUser)
+        else ResponseEntity.notFound().build()
+    }
+
+    @PutMapping("/profile_picture/{firebaseUid}")
+    fun updateProfilePicture(@PathVariable firebaseUid: String, @RequestBody updateProfilePictureDto: UpdateProfilePictureDto): ResponseEntity<UserResponseDto> {
+        val updatedUser = userService.updateProfilePicture(firebaseUid, updateProfilePictureDto)
         return if (updatedUser != null) ResponseEntity.ok(updatedUser)
         else ResponseEntity.notFound().build()
     }
