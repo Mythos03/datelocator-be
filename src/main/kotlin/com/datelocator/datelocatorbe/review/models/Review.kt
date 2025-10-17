@@ -36,8 +36,9 @@ data class Review(
     @JoinColumn(
         name = "entity_id",
         referencedColumnName = "id",
-        foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT)
+        foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT),
+        nullable = true
     )
     @Where(clause = "entity_type = 'REVIEW'")
-    val images: MutableSet<Image> = mutableSetOf()
+    val images: MutableSet<Image>? = null
 )

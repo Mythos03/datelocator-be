@@ -1,5 +1,6 @@
 package com.datelocator.datelocatorbe.review
 
+import com.datelocator.datelocatorbe.image.models.EntityType
 import com.datelocator.datelocatorbe.preference.PreferenceRepository
 import com.datelocator.datelocatorbe.review.models.Review
 import com.datelocator.datelocatorbe.review.models.ReviewRequestDto
@@ -7,6 +8,7 @@ import com.datelocator.datelocatorbe.review.models.ReviewResponseDto
 import com.datelocator.datelocatorbe.user.UserService
 import com.datelocator.datelocatorbe.venue.VenueService
 import com.datelocator.datelocatorbe.venue.models.UpdateVenuePreferencesDto
+import com.datelocator.datelocatorbe.image.models.Image
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -43,8 +45,10 @@ class ReviewService(
             reviewText = reviewRequestDto.reviewText,
             user = user,
             venue = venue,
-            preferences = preferences.toMutableSet()
+            preferences = preferences.toMutableSet(),
+            images = mutableSetOf(),
         )
+        review.images?.addAll(reviewRequestDto.imageUrls?.map { Image(imageUrl = it, entityId = review.id, entityType = EntityType.REVIEW) } ?: emptySet())
 
         val savedReview = reviewRepository.save(review)
         return ReviewMapper.toResponseDto(savedReview)

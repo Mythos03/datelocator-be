@@ -7,5 +7,6 @@ data class ReviewResponseDto(
     val rating: Double,
     val reviewText: String?,
     val userId: String,
-    val username: String?
+    val username: String?,
+    val imageUrls: MutableSet<String>? = mutableSetOf()
 )

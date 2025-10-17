@@ -10,7 +10,8 @@ object ReviewMapper {
             rating = review.rating,
             reviewText = review.reviewText,
             userId = review.user.firebaseUid,
-            username = review.user.username
+            username = review.user.username,
+            imageUrls = review.images?.map { it.imageUrl }?.toMutableSet()
         )
     }
 }

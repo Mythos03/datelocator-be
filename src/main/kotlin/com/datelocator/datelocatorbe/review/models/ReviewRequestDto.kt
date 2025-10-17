@@ -7,5 +7,6 @@ data class ReviewRequestDto(
     val reviewText: String?,
     val venueId: UUID,
     val firebaseUid: String,
-    val preferenceIds: MutableSet<UUID>? = mutableSetOf()
+    val preferenceIds: MutableSet<UUID>? = mutableSetOf(),
+    val imageUrls: MutableSet<String>? = mutableSetOf()
 )
