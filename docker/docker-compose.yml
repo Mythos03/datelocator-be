@@ -13,5 +13,35 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  keycloak-db:
+    image: postgres:15
+    container_name: keycloak-postgres
+    environment:
+      POSTGRES_USER: datelocator_keycloak
+      POSTGRES_PASSWORD: datelocator_keycloak_password
+      POSTGRES_DB: keycloak
+    volumes:
+      - keycloak_data:/var/lib/postgresql/data
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.5.5
+    container_name: datelocator-keycloak
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+      KC_DB_USERNAME: datelocator_keycloak
+      KC_DB_PASSWORD: datelocator_keycloak_password
+      KEYCLOAK_ADMIN: datelocator
+      KEYCLOAK_ADMIN_PASSWORD: datelocatorpw
+      KC_HOSTNAME_STRICT: "false"
+      KC_HTTP_ENABLED: "true"
+    ports:
+      - "8081:8080"
+    command: start-dev
+    depends_on:
+      - keycloak-db
+
+
 volumes:
   postgres_data:
+  keycloak_data:
