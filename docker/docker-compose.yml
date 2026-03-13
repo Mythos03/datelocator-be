@@ -2,7 +2,7 @@ name: datelocator
 
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:17
     container_name: datelocator-postgres
     environment:
       POSTGRES_USER: datelocator
