@@ -25,7 +25,7 @@ class ReviewService(
     }
 
     fun createReview(reviewRequestDto: ReviewRequestDto): ReviewResponseDto {
-        val user = userService.getUserEntityById(reviewRequestDto.firebaseUid)
+        val user = userService.getUserEntityById(reviewRequestDto.keycloakId)
             ?: throw IllegalArgumentException("User not found")
 
         val venue = venueService.getVenueById(reviewRequestDto.venueId)
@@ -38,7 +38,7 @@ class ReviewService(
         if (preferences.isEmpty()) {
             throw IllegalArgumentException("Preferences not found")
         }
-        venueService.addPreferencesToVenue(venue,  UpdateVenuePreferencesDto(reviewRequestDto.preferenceIds ?: emptySet(), reviewRequestDto.firebaseUid))
+        venueService.addPreferencesToVenue(venue,  UpdateVenuePreferencesDto(reviewRequestDto.preferenceIds ?: emptySet(), reviewRequestDto.keycloakId))
 
         val review = Review(
             rating = reviewRequestDto.rating,

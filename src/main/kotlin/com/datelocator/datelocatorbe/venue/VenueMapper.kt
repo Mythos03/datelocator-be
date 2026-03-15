@@ -16,7 +16,7 @@ class VenueMapper(
     private val venuePreferenceVoteService: VenuePreferenceVoteService,
 ){
     fun toEntity(venueRequestDto: VenueRequestDto, createdBy: User? = null): Venue {
-        val user = venueRequestDto.firebaseUid?.let { userService.getUserEntityById(it) } ?: createdBy
+        val user = venueRequestDto.keycloakId?.let { userService.getUserEntityById(it) } ?: createdBy
 
         return Venue(
             googlePlacesId = venueRequestDto.googlePlacesId,

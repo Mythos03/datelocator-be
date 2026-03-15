@@ -9,5 +9,5 @@ import java.util.*
 interface UserRepository : JpaRepository<User, UUID> {
     fun findByUsername(username: String): User?
 
-    fun findByfirebaseUid(firebaseUid: String): User?
+    fun findByKeycloakId(keycloakId: UUID): User?
 }

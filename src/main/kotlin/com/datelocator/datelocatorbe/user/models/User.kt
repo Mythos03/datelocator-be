@@ -14,8 +14,8 @@ data class User(
     @Id
     val id: UUID = UUID.randomUUID(),
 
-    @Column(nullable = false, unique = true)
-    val firebaseUid: String,
+    @Column(name = "keycloak_id" ,nullable = false, unique = true)
+    val keycloakId: UUID,
     var username: String? = null,
     var firstName: String? = null,
     var lastName: String? = null,

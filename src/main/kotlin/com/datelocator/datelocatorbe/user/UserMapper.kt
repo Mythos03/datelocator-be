@@ -13,7 +13,7 @@ class UserMapper (
 ) {
     fun toResponseDto(user: User): UserResponseDto {
         return UserResponseDto(
-            firebaseUid = user.firebaseUid,
+            keycloakId = user.keycloakId.toString(),
             username = user.username ?: "",
             firstName = user.firstName,
             lastName = user.lastName,
@@ -26,7 +26,7 @@ class UserMapper (
 
     fun userRequestDtoToUser(userRequestDto: UserRequestDto): User {
         return User(
-            firebaseUid = userRequestDto.firebaseUid,
+            keycloakId = java.util.UUID.fromString(userRequestDto.keycloakId),
             username = userRequestDto.username,
             firstName = userRequestDto.firstName,
             lastName = userRequestDto.lastName,
@@ -37,7 +37,7 @@ class UserMapper (
 
     fun partialUserToUser(createPartialUserDto: CreatePartialUserDto): User {
         return User(
-            firebaseUid = createPartialUserDto.firebaseUid,
+            keycloakId = java.util.UUID.fromString(createPartialUserDto.keycloakId),
         )
     }
 }

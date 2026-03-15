@@ -4,5 +4,5 @@ import java.util.*
 
 data class UpdateVenuePreferencesDto(
     val preferenceIds: Set<UUID>,
-    val firebaseUid: String
+    val keycloakId: String
 )

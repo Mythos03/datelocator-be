@@ -7,6 +7,6 @@ import org.springframework.data.repository.query.Param
 import java.util.*
 
 interface PreferenceRepository : JpaRepository<Preference, UUID> {
-    @Query("SELECT p FROM Preference p JOIN p.users u WHERE u.firebaseUid = :firebaseUid")
-    fun findPreferencesByFirebaseUid(@Param("firebaseUid") firebaseUid: String): List<Preference>
+    @Query("SELECT p FROM Preference p JOIN p.users u WHERE u.keycloakId = :keycloakId")
+    fun findPreferencesByKeycloakId(@Param("keycloakId") keycloakId: UUID): List<Preference>
 }

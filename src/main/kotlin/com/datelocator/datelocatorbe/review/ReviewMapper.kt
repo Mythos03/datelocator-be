@@ -9,7 +9,7 @@ object ReviewMapper {
             id = review.id,
             rating = review.rating,
             reviewText = review.reviewText,
-            userId = review.user.firebaseUid,
+            userId = review.user.keycloakId.toString(),
             username = review.user.username,
             imageUrls = review.images?.map { it.imageUrl }?.toMutableSet()
         )

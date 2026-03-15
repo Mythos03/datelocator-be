@@ -1,7 +1,7 @@
 package com.datelocator.datelocatorbe.venue.models
 
 data class RecommendedVenueRequestDto(
-    val firebaseUid: String,
+    val keycloakId: String,
     val lat: Double,
     val lng: Double,
     val minRating: Double,

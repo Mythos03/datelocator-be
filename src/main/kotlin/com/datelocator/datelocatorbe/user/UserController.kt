@@ -6,7 +6,10 @@ import com.datelocator.datelocatorbe.user.models.UpdateUserPreferencesRequest
 import com.datelocator.datelocatorbe.user.models.UpdateUserRequestDto
 import com.datelocator.datelocatorbe.user.models.UserRequestDto
 import com.datelocator.datelocatorbe.user.models.UserResponseDto
+import okhttp3.Response
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -16,62 +19,24 @@ class UserController(
     private val userMapper: UserMapper
 ) {
 
-    @GetMapping("/firebase/{uid}")
-    fun getUserByFirebaseUid(@PathVariable uid: String): ResponseEntity<UserResponseDto> {
-        val user = userService.getUserById(uid)
+    @GetMapping("/me")
+    fun getCurrentUser(@AuthenticationPrincipal jwt: Jwt): ResponseEntity<UserResponseDto> {
+        val keycloakUserId = jwt.subject
+        val user = userService.getUserById(keycloakUserId)
         return if (user != null) ResponseEntity.ok(user)
         else ResponseEntity.notFound().build()
     }
 
-    @PostMapping
-    fun createPartialUser(@RequestBody user: CreatePartialUserDto): ResponseEntity<UserResponseDto> {
-        val savedUser = userService.createPartialUser(user)
-        return ResponseEntity.ok(userMapper.toResponseDto(savedUser))
-    }
-
-    @PutMapping
-    fun updatePartialUser(@RequestBody user: UserRequestDto): ResponseEntity<UserResponseDto> {
-        val updatedUser = userService.updatePartialUser(user)
-        return if (updatedUser != null) ResponseEntity.ok(updatedUser)
-        else ResponseEntity.notFound().build()
-    }
-
-    @GetMapping
-    fun getAllUsers(): ResponseEntity<List<UserResponseDto>> {
-        return ResponseEntity.ok(userService.getAllUsers())
-    }
-
-    @GetMapping("/username")
-    fun findByUsername(@RequestParam username: String): ResponseEntity<UserResponseDto> {
-        val user = userService.findByUsername(username)
-        return if (user != null) ResponseEntity.ok(user)
-        else ResponseEntity.notFound().build()
-    }
-
-    @PutMapping("/firebase/{uid}/preferences")
-    fun updateUserPreferencesByFirebaseUid(
-        @PathVariable uid: String,
-        @RequestBody request: UpdateUserPreferencesRequest
-    ): ResponseEntity<UserResponseDto> {
-        val updatedUser = userService.updateUserPreferences(uid, request.preferences)
-        return if (updatedUser != null) ResponseEntity.ok(updatedUser)
-        else ResponseEntity.notFound().build()
-    }
-
-    @PutMapping("/{firebaseUid}")
+    @PutMapping("/me")
     fun updateUser(
-        @PathVariable firebaseUid: String,
+        @AuthenticationPrincipal jwt: Jwt,
         @RequestBody updateUserRequestDto: UpdateUserRequestDto
     ): ResponseEntity<UserResponseDto> {
-        val updatedUser = userService.updateUser(firebaseUid, updateUserRequestDto)
+        val keycloakUserId = jwt.subject
+
+        val updatedUser = userService.updateUser(keycloakUserId, updateUserRequestDto)
         return if (updatedUser != null) ResponseEntity.ok(updatedUser)
         else ResponseEntity.notFound().build()
     }
 
-    @PutMapping("/profile_picture/{firebaseUid}")
-    fun updateProfilePicture(@PathVariable firebaseUid: String, @RequestBody updateProfilePictureDto: UpdateProfilePictureDto): ResponseEntity<UserResponseDto> {
-        val updatedUser = userService.updateProfilePicture(firebaseUid, updateProfilePictureDto)
-        return if (updatedUser != null) ResponseEntity.ok(updatedUser)
-        else ResponseEntity.notFound().build()
-    }
 }

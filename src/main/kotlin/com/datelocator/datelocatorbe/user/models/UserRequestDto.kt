@@ -1,7 +1,7 @@
 package com.datelocator.datelocatorbe.user.models
 
 data class UserRequestDto(
-    val firebaseUid: String,
+    val keycloakId: String,
     val username: String,
     val firstName: String,
     val lastName: String,

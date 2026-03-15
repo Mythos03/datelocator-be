@@ -23,15 +23,15 @@ class UserService(
 ) {
 
     fun getUserById(uid: String): UserResponseDto? {
-        val user: User = userRepository.findByfirebaseUid(uid) ?: return null
+        val user: User = userRepository.findByKeycloakId(UUID.fromString(uid)) ?: return null
         return userMapper.toResponseDto(user)
     }
     fun getUserEntityById(uid: String): User? {
-        return userRepository.findByfirebaseUid(uid)
+        return userRepository.findByKeycloakId(UUID.fromString(uid))
     }
 
     fun updatePartialUser(requestDto: UserRequestDto): UserResponseDto? {
-        val existingUser = userRepository.findByfirebaseUid(requestDto.firebaseUid)
+        val existingUser = userRepository.findByKeycloakId(UUID.fromString(requestDto.keycloakId))
             ?: return null
 
         existingUser.username = requestDto.username
@@ -64,7 +64,7 @@ class UserService(
     }
 
     fun updateUserPreferences(uid: String, preferenceIds: Set<UUID>): UserResponseDto? {
-        val user: User = userRepository.findByfirebaseUid(uid) ?: return null
+        val user: User = userRepository.findByKeycloakId(UUID.fromString(uid)) ?: return null
         val preferenceEntities: Set<Preference> = preferenceRepository.findAllById(preferenceIds).toSet()
 
         user.preferences.clear()
@@ -78,8 +78,8 @@ class UserService(
         return userRepository.save(userMapper.partialUserToUser(requestDto))
     }
 
-    fun updateUser(firebaseUid: String, updateUserRequestDto: UpdateUserRequestDto): UserResponseDto? {
-        val existingUser = userRepository.findByfirebaseUid(firebaseUid)
+    fun updateUser(keycloakId: String, updateUserRequestDto: UpdateUserRequestDto): UserResponseDto? {
+        val existingUser = userRepository.findByKeycloakId(UUID.fromString(keycloakId))
             ?: return null
 
         existingUser.username = updateUserRequestDto.username
@@ -93,8 +93,8 @@ class UserService(
         return userMapper.toResponseDto(existingUser)
     }
 
-    fun updateProfilePicture(firebaseUid: String, updateProfilePictureDto: UpdateProfilePictureDto): UserResponseDto? {
-        val existingUser = userRepository.findByfirebaseUid(firebaseUid) ?: return null
+    fun updateProfilePicture(keycloakId: String, updateProfilePictureDto: UpdateProfilePictureDto): UserResponseDto? {
+        val existingUser = userRepository.findByKeycloakId(UUID.fromString(keycloakId)) ?: return null
 
         existingUser.image = updateProfilePictureDto.imageDownloadUrl?.let {
             Image(

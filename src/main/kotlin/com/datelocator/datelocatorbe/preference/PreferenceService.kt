@@ -29,8 +29,8 @@ class PreferenceService(
         return preferenceRepository.findById(id).orElse(null)
     }
     
-    fun returnPreferenceIdsByUserId(firebaseUid: String): List<UUID> {
-        val preferences = preferenceRepository.findPreferencesByFirebaseUid(firebaseUid)
+    fun returnPreferenceIdsByKeycloakId(keycloakId: String): List<UUID> {
+        val preferences = preferenceRepository.findPreferencesByKeycloakId(UUID.fromString(keycloakId))
 
         return preferences.map { it.id }
     }
