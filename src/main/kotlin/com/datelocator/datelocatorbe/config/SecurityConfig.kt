@@ -12,26 +12,30 @@ import org.springframework.security.web.SecurityFilterChain
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val keycloakJwtAuthenticationConverter: KeycloakJwtAuthenticationConverter,
-    private val userRepository: UserRepository
+        private val keycloakJwtAuthenticationConverter: KeycloakJwtAuthenticationConverter,
+        private val userRepository: UserRepository
 ) {
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            .csrf { it.disable() }
-            .authorizeHttpRequests { auth ->
-                // Allow Swagger and open endpoints
-                auth.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                // Require a valid token for everything else
-                auth.anyRequest().authenticated()
-            }
-            .oauth2ResourceServer { oauth2 ->
-                oauth2.jwt { jwt ->
-                    jwt.jwtAuthenticationConverter(keycloakJwtAuthenticationConverter)
+                .csrf { it.disable() }
+                .authorizeHttpRequests { auth ->
+                    // Allow Swagger and open endpoints
+                    auth.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+                            .permitAll()
+                    // Require a valid token for everything else
+                    auth.anyRequest().authenticated()
                 }
-            }
-            .addFilterAfter(UserSyncFilter(userRepository), BearerTokenAuthenticationFilter::class.java)
+                .oauth2ResourceServer { oauth2 ->
+                    oauth2.jwt { jwt ->
+                        jwt.jwtAuthenticationConverter(keycloakJwtAuthenticationConverter)
+                    }
+                }
+                .addFilterAfter(
+                        UserSyncFilter(userRepository),
+                        BearerTokenAuthenticationFilter::class.java
+                )
 
         return http.build()
     }
