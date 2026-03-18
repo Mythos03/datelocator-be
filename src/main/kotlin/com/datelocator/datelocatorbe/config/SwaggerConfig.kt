@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class SwaggerConfig(
-    @Value("\${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+    @Value("\${app.security.swagger.issuer-uri}")
     private val keycloakIssuerUri: String
 ) {
 

@@ -15,8 +15,6 @@ class UserMapper (
         return UserResponseDto(
             keycloakId = user.keycloakId.toString(),
             username = user.username ?: "",
-            firstName = user.firstName,
-            lastName = user.lastName,
             gender = user.gender,
             age = user.age,
             preferences = user.preferences.map { preferenceMapper.toResponseDto(it) }.toSet(),
@@ -28,8 +26,6 @@ class UserMapper (
         return User(
             keycloakId = java.util.UUID.fromString(userRequestDto.keycloakId),
             username = userRequestDto.username,
-            firstName = userRequestDto.firstName,
-            lastName = userRequestDto.lastName,
             gender = userRequestDto.gender,
             age = userRequestDto.age,
         )

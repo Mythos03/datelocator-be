@@ -35,18 +35,10 @@ class UserService(
             ?: return null
 
         existingUser.username = requestDto.username
-        existingUser.firstName = requestDto.firstName
-        existingUser.lastName = requestDto.lastName
         existingUser.gender = requestDto.gender
         existingUser.age = requestDto.age
         existingUser.isComplete = true
-        existingUser.image = requestDto.imageDownloadUrl?.let {
-            Image(
-                imageUrl = it,
-                entityId = existingUser.id,
-                entityType = EntityType.USER
-            )
-        }
+
         userRepository.save(existingUser)
 
         return userMapper.toResponseDto(existingUser)
@@ -78,13 +70,15 @@ class UserService(
         return userRepository.save(userMapper.partialUserToUser(requestDto))
     }
 
+    fun createUser(requestDto: UserRequestDto): User {
+        return userRepository.save(userMapper.userRequestDtoToUser(requestDto))
+    }
+
     fun updateUser(keycloakId: String, updateUserRequestDto: UpdateUserRequestDto): UserResponseDto? {
         val existingUser = userRepository.findByKeycloakId(UUID.fromString(keycloakId))
             ?: return null
 
         existingUser.username = updateUserRequestDto.username
-        existingUser.firstName = updateUserRequestDto.firstName
-        existingUser.lastName = updateUserRequestDto.lastName
         existingUser.gender = updateUserRequestDto.gender
         existingUser.age = updateUserRequestDto.age
 

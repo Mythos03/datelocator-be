@@ -34,15 +34,10 @@ class UserSyncFilter(
                     
                     if (existingUser == null) {
                         // Create a new user from JWT claims
-                        val username = jwt.getClaimAsString("preferred_username")
-                        val firstName = jwt.getClaimAsString("given_name")
-                        val lastName = jwt.getClaimAsString("family_name")
+                        val username = jwt.getClaimAsString("username")
                         
                         val newUser = User(
                             keycloakId = keycloakId,
-                            username = username ?: "user_${keycloakId.toString().substring(0, 8)}",
-                            firstName = firstName,
-                            lastName = lastName
                         )
                         
                         userRepository.save(newUser)

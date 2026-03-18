@@ -16,9 +16,8 @@ data class User(
 
     @Column(name = "keycloak_id" ,nullable = false, unique = true)
     val keycloakId: UUID,
+    @Column(nullable = false, unique = true)
     var username: String? = null,
-    var firstName: String? = null,
-    var lastName: String? = null,
 
     @Enumerated(EnumType.ORDINAL)
     var gender: Genders? = null,
