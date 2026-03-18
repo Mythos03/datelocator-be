@@ -13,27 +13,10 @@ class UserMapper (
 ) {
     fun toResponseDto(user: User): UserResponseDto {
         return UserResponseDto(
-            keycloakId = user.keycloakId.toString(),
             username = user.username ?: "",
             gender = user.gender,
             age = user.age,
             preferences = user.preferences.map { preferenceMapper.toResponseDto(it) }.toSet(),
-            imageUrl = user.image?.imageUrl,
-        )
-    }
-
-    fun userRequestDtoToUser(userRequestDto: UserRequestDto): User {
-        return User(
-            keycloakId = java.util.UUID.fromString(userRequestDto.keycloakId),
-            username = userRequestDto.username,
-            gender = userRequestDto.gender,
-            age = userRequestDto.age,
-        )
-    }
-
-    fun partialUserToUser(createPartialUserDto: CreatePartialUserDto): User {
-        return User(
-            keycloakId = java.util.UUID.fromString(createPartialUserDto.keycloakId),
         )
     }
 }

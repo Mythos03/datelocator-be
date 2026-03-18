@@ -32,7 +32,7 @@ class VenueService(
 
 
             val createdBy = venueRequestDto.keycloakId?.let { userId ->
-                userService.getUserEntityById(userId)
+                userService.getUserEntityByKeycloakId(userId)
             }
 
             val venue = venueMapper.toEntity(venueRequestDto, createdBy)
@@ -58,7 +58,7 @@ class VenueService(
                             .findByVenueIdAndPreferenceId(venue.id, preferenceId)
 
                         if (existingVote == null) {
-                            val user = userService.getUserEntityById(updateVenuePreferencesDto.keycloakId)
+                            val user = userService.getUserEntityByKeycloakId(updateVenuePreferencesDto.keycloakId)
                                 ?: throw IllegalArgumentException("User not found")
                             val vote = VenuePreferenceVote(
                                 venue = venue,

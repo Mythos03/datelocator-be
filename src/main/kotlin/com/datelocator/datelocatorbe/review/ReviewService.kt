@@ -25,7 +25,7 @@ class ReviewService(
     }
 
     fun createReview(reviewRequestDto: ReviewRequestDto): ReviewResponseDto {
-        val user = userService.getUserEntityById(reviewRequestDto.keycloakId)
+        val user = userService.getUserEntityByKeycloakId(reviewRequestDto.keycloakId)
             ?: throw IllegalArgumentException("User not found")
 
         val venue = venueService.getVenueById(reviewRequestDto.venueId)

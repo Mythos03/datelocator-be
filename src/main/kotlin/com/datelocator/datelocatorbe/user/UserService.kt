@@ -4,9 +4,7 @@ import com.datelocator.datelocatorbe.image.models.EntityType
 import com.datelocator.datelocatorbe.image.models.Image
 import com.datelocator.datelocatorbe.preference.PreferenceRepository
 import com.datelocator.datelocatorbe.preference.models.Preference
-import com.datelocator.datelocatorbe.user.models.CreatePartialUserDto
 import com.datelocator.datelocatorbe.user.models.UpdateProfilePictureDto
-import com.datelocator.datelocatorbe.user.models.UpdateUserRequestDto
 import com.datelocator.datelocatorbe.user.models.User
 import com.datelocator.datelocatorbe.user.models.UserRequestDto
 import com.datelocator.datelocatorbe.user.models.UserResponseDto
@@ -26,22 +24,8 @@ class UserService(
         val user: User = userRepository.findByKeycloakId(UUID.fromString(uid)) ?: return null
         return userMapper.toResponseDto(user)
     }
-    fun getUserEntityById(uid: String): User? {
+    fun getUserEntityByKeycloakId(uid: String): User? {
         return userRepository.findByKeycloakId(UUID.fromString(uid))
-    }
-
-    fun updatePartialUser(requestDto: UserRequestDto): UserResponseDto? {
-        val existingUser = userRepository.findByKeycloakId(UUID.fromString(requestDto.keycloakId))
-            ?: return null
-
-        existingUser.username = requestDto.username
-        existingUser.gender = requestDto.gender
-        existingUser.age = requestDto.age
-        existingUser.isComplete = true
-
-        userRepository.save(existingUser)
-
-        return userMapper.toResponseDto(existingUser)
     }
 
     fun findByUsername(username: String): UserResponseDto? {
@@ -66,21 +50,16 @@ class UserService(
         return userMapper.toResponseDto(savedUser)
     }
 
-    fun createPartialUser(requestDto: CreatePartialUserDto): User {
-        return userRepository.save(userMapper.partialUserToUser(requestDto))
-    }
-
-    fun createUser(requestDto: UserRequestDto): User {
-        return userRepository.save(userMapper.userRequestDtoToUser(requestDto))
-    }
-
-    fun updateUser(keycloakId: String, updateUserRequestDto: UpdateUserRequestDto): UserResponseDto? {
-        val existingUser = userRepository.findByKeycloakId(UUID.fromString(keycloakId))
+    fun updateUser(keycloakId: UUID, userRequestDto: UserRequestDto): UserResponseDto? {
+        val existingUser = userRepository.findByKeycloakId(keycloakId)
             ?: return null
 
-        existingUser.username = updateUserRequestDto.username
-        existingUser.gender = updateUserRequestDto.gender
-        existingUser.age = updateUserRequestDto.age
+        existingUser.gender = userRequestDto.gender
+        existingUser.age = userRequestDto.age
+        existingUser.preferences = userRequestDto.preferences?.let { preferenceIds ->
+            preferenceRepository.findAllById(preferenceIds).toMutableSet()
+        } ?: mutableSetOf()
+        existingUser.isComplete = true
 
         userRepository.save(existingUser)
 
