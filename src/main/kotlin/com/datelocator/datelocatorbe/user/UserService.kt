@@ -24,6 +24,24 @@ class UserService(
         val user: User = userRepository.findByKeycloakId(UUID.fromString(uid)) ?: return null
         return userMapper.toResponseDto(user)
     }
+
+    fun syncUser(keycloakId: String, username: String): UserResponseDto {
+        val keycloakUuid = UUID.fromString(keycloakId)
+        val user = userRepository.findByKeycloakId(keycloakUuid)
+            ?.apply {
+                if (this.username != username) {
+                    this.username = username
+                }
+            }
+            ?: User(
+                keycloakId = keycloakUuid,
+                username = username,
+                isComplete = false
+            )
+
+        return userMapper.toResponseDto(userRepository.save(user))
+    }
+
     fun getUserEntityByKeycloakId(uid: String): User? {
         return userRepository.findByKeycloakId(UUID.fromString(uid))
     }

@@ -1,7 +1,5 @@
 package com.datelocator.datelocatorbe.config
 
-import com.datelocator.datelocatorbe.security.UserSyncFilter
-import com.datelocator.datelocatorbe.user.UserRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,14 +13,12 @@ import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.jwt.JwtValidators
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
-import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter
 import org.springframework.security.web.SecurityFilterChain
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
         private val keycloakJwtAuthenticationConverter: KeycloakJwtAuthenticationConverter,
-        private val userRepository: UserRepository,
         @Value("\${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
         private val jwkSetUri: String,
         @Value("\${app.security.jwt.accepted-issuers}")
@@ -78,10 +74,6 @@ class SecurityConfig(
                         jwt.jwtAuthenticationConverter(keycloakJwtAuthenticationConverter)
                     }
                 }
-                .addFilterAfter(
-                        UserSyncFilter(userRepository),
-                        BearerTokenAuthenticationFilter::class.java
-                )
 
         return http.build()
     }
