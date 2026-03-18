@@ -28,18 +28,20 @@ class UserService(
     fun syncUser(keycloakId: String, username: String): UserResponseDto {
         val keycloakUuid = UUID.fromString(keycloakId)
         val user = userRepository.findByKeycloakId(keycloakUuid)
-            ?.apply {
-                if (this.username != username) {
-                    this.username = username
-                }
-            }
-            ?: User(
+        val userToSave = if (user == null) {
+            User(
                 keycloakId = keycloakUuid,
                 username = username,
                 isComplete = false
             )
+        } else {
+            if (user.username != username) {
+                user.username = username
+            }
+            user
+        }
 
-        return userMapper.toResponseDto(userRepository.save(user))
+        return userMapper.toResponseDto(userRepository.save(userToSave))
     }
 
     fun getUserEntityByKeycloakId(uid: String): User? {

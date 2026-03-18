@@ -33,7 +33,7 @@ class UserController(private val userService: UserService) {
     fun getCurrentUser(@AuthenticationPrincipal jwt: Jwt): ResponseEntity<UserResponseDto> {
         val keycloakUserId = jwt.subject
         val username = jwt.getClaimAsString("app_username")
-            ?: throw IllegalArgumentException("Username claim is missing from token")
+            ?: throw IllegalArgumentException("Authentication token is missing required app_username claim")
         return ResponseEntity.ok(userService.syncUser(keycloakUserId, username))
     }
 
