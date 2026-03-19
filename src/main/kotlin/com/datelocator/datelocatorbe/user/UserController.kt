@@ -1,9 +1,7 @@
 package com.datelocator.datelocatorbe.user
 
-import com.datelocator.datelocatorbe.user.models.UpdateUserRequestDto
 import com.datelocator.datelocatorbe.user.models.UserRequestDto
 import com.datelocator.datelocatorbe.user.models.UserResponseDto
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
@@ -12,7 +10,7 @@ import java.util.UUID
 
 @RestController
 @RequestMapping("/api/users")
-class UserController(private val userService: UserService, private val userMapper: UserMapper) {
+class UserController(private val userService: UserService) {
 
 //    @PostMapping
 //    fun registerUser(
@@ -34,8 +32,9 @@ class UserController(private val userService: UserService, private val userMappe
     @GetMapping("/me")
     fun getCurrentUser(@AuthenticationPrincipal jwt: Jwt): ResponseEntity<UserResponseDto> {
         val keycloakUserId = jwt.subject
-        val user = userService.getUserById(keycloakUserId)
-        return if (user != null) ResponseEntity.ok(user) else ResponseEntity.notFound().build()
+        val username = jwt.getClaimAsString("app_username")
+            ?: throw IllegalArgumentException("Authentication token is missing required app_username claim")
+        return ResponseEntity.ok(userService.syncUser(keycloakUserId, username))
     }
 
     @PutMapping("/me")

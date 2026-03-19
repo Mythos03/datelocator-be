@@ -37,7 +37,7 @@ src/main/kotlin/com/datelocator/datelocatorbe/
 **Keycloak Integration** (`config/SecurityConfig.kt`):
 - JWT tokens validated via `spring.security.oauth2.resourceserver.jwt`
 - Multi-issuer support: accepts issuers from env var `app.security.jwt.accepted-issuers` (comma-separated)
-- `UserSyncFilter` syncs user metadata from Keycloak JWT claims
+- `UserController` + `UserService.syncUser` handle user metadata sync from JWT claims
 - `KeycloakJwtAuthenticationConverter` extracts authorities from JWT
 - Controllers use `@AuthenticationPrincipal jwt: Jwt` to inject authenticated user's JWT
 
@@ -204,9 +204,8 @@ SpringDoc configured in `SwaggerConfig.kt` with OAuth2 scheme pointing to Keyclo
 | `build.gradle.kts` | All dependencies, Java version, Gradle plugins |
 | `src/main/resources/application.properties` | Database, Keycloak, server config |
 | `config/SecurityConfig.kt` | OAuth2 JWT validation, issuer whitelist, bearer token flow |
-| `security/UserSyncFilter.kt` | Keycloak JWT → user context sync |
+| `user/UserController.kt` + `user/UserService.kt` | User synchronization from JWT claims (`/api/users/me`) |
 | `user/UserService.kt` + `user/models/User.kt` | Core user entity and business logic |
 | `venue/VenueService.kt` + `venue/VenueController.kt` | Venue creation, preferences, Google Maps integration |
 | `votes/VenuePreferenceVote.kt` | Vote aggregation model linking users to venue+preference combos |
 | `docker/docker-compose.yml` | Postgres + Keycloak setup |
-
