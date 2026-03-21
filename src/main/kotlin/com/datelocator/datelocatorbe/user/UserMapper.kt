@@ -17,6 +17,7 @@ class UserMapper (
             gender = user.gender,
             age = user.age,
             preferences = user.preferences.map { preferenceMapper.toResponseDto(it) }.toSet(),
+            isComplete = user.isComplete
         )
     }
 }
