@@ -48,7 +48,7 @@ src/main/kotlin/com/datelocator/datelocatorbe/
 - **User** (keycloakId PK, unique username): has Preferences (ManyToMany), owns Reviews, owns Image
 - **Venue** (UUID, location-based): has Preferences (votes-based), has OpeningHours, has Reviews, has createdBy User
 - **Preference** (uuid): DateType like "dinner", "movie night" (shared across users)
-- **VenuePreferenceVote**: Aggregates user votes on venue+preference combo with vote count threshold (`DEFAULT_VOTE_THRESHOLD = 1`)
+- **VenuePreferenceVote**: Records individual user votes on venue+preference combos, aggregated by count with threshold (`DEFAULT_VOTE_THRESHOLD = 1`)
 - **Review**: User's written review linked to Venue
 
 **Convention**: All entity PKs are UUIDs except enum-backed fields use `EnumType.ORDINAL`
@@ -126,7 +126,7 @@ cd docker && docker compose up --build
 ### Configuration
 
 Application runs on `0.0.0.0:8080`, configured in `src/main/resources/application.properties`:
-- PostgreSQL: `localhost:5433` (via Docker, default user: `datelocator`/`datelocator`)
+- PostgreSQL: `localhost:5433/datelocator-db` (via Docker, default user: `datelocator`/`datelocator`)
 - Keycloak: `localhost:8081` (realm: `datelocator`)
 - Accepted issuers: env vars `KEYCLOAK_ACCEPTED_ISSUERS`, `KEYCLOAK_ISSUER_URI`, `KEYCLOAK_JWK_SET_URI`
 - Swagger UI: `http://localhost:8080/swagger-ui.html` (OAuth2 enabled via Keycloak)
@@ -136,8 +136,8 @@ Application runs on `0.0.0.0:8080`, configured in `src/main/resources/applicatio
 ### Gradle Specifics
 
 - **Kotlin Plugin**: 1.9.25 with Spring plugin (allOpen annotation processing for JPA entities)
-- **Dependencies**: Spring Data JPA, Web, Security, OAuth2 Resource Server, Jackson Kotlin, Google Maps API, PostgreSQL
-- **Tests**: JUnit 5 (configured via `useJUnitPlatform()`)
+- **Dependencies**: Spring Data JPA, Web, Security, OAuth2 Resource Server, Jackson Kotlin, Google Maps API, PostgreSQL, SpringDoc OpenAPI, Gson
+- **Tests**: JUnit 5 with Kotlin test support (configured via `useJUnitPlatform()`)
 
 ## Common Developer Workflows
 
@@ -209,3 +209,4 @@ SpringDoc configured in `SwaggerConfig.kt` with OAuth2 scheme pointing to Keyclo
 | `venue/VenueService.kt` + `venue/VenueController.kt` | Venue creation, preferences, Google Maps integration |
 | `votes/VenuePreferenceVote.kt` | Vote aggregation model linking users to venue+preference combos |
 | `docker/docker-compose.yml` | Postgres + Keycloak setup |
+| `docker/realm-export.json` | Keycloak realm configuration export |
