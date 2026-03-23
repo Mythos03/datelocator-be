@@ -113,8 +113,67 @@ class VenueController(
     ): Page<VenueResponseDto> {
         logger.info("Searching venues with name: $name, page: $page, size: $size")
         val venues = venueService.searchVenuesByName(name, page, size)
-        return venues.map { venue -> 
+        return venues.map { venue ->
             venueMapper.toResponseDto(venue)
+        }
+    }
+
+    /**
+     * Search for nearby venues using hybrid local DB + Google Places approach
+     *
+     * Query Params:
+     * - lat: Latitude of search center (required)
+     * - lng: Longitude of search center (required)
+     * - radius: Search radius in meters (default: 5000)
+     * - type: Optional Google Places type filter (e.g., "restaurant", "cafe")
+     * - keycloakId: Optional user ID for attribution
+     */
+    @GetMapping("/nearby")
+    fun searchNearbyVenues(
+        @RequestParam lat: Double,
+        @RequestParam lng: Double,
+        @RequestParam(defaultValue = "5000") radius: Int,
+        @RequestParam(required = false) type: String?,
+        @RequestParam(required = false) keycloakId: String?
+    ): ResponseEntity<List<VenueResponseDto>> {
+        return try {
+            logger.info("Searching for nearby venues at ($lat, $lng) with radius $radius")
+
+            val venues = venueService.searchNearbyVenues(lat, lng, radius, type, keycloakId)
+            logger.info("Returning ${venues.size} nearby venues")
+
+            ResponseEntity.ok(venues)
+        } catch (e: Exception) {
+            logger.error("Failed to search nearby venues", e)
+            ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(emptyList())
+        }
+    }
+
+    /**
+     * Get detailed venue information
+     * Fetches from Google Places API if details not already cached
+     *
+     * Path variable 'id' can be either:
+     * - Internal UUID
+     * - Google Place ID
+     */
+    @GetMapping("/details/{id}")
+    fun getVenueDetails(@PathVariable id: String): ResponseEntity<Any> {
+        return try {
+            logger.info("Fetching venue details for ID: $id")
+
+            val venue = venueService.getVenueDetails(id)
+                ?: return ResponseEntity.notFound().build()
+
+            logger.info("Successfully retrieved venue details for: ${venue.name}")
+            ResponseEntity.ok(venue)
+        } catch (e: Exception) {
+            logger.error("Failed to fetch venue details for ID: $id", e)
+            ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(mapOf("error" to e.message))
         }
     }
 

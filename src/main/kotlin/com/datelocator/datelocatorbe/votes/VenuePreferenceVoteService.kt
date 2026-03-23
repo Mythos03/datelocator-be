@@ -9,6 +9,6 @@ class VenuePreferenceVoteService (
 ) {
     fun getPreferenceIdsByVenueId(venueId: UUID): Set<UUID> {
         val preferenceVotes = venuePreferenceVoteRepository.findByVenueId(venueId)
-        return preferenceVotes.map { it.venue.id}.toSet()
+        return preferenceVotes.map { it.preference.id }.toSet()
     }
 }
