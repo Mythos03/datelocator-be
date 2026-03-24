@@ -43,5 +43,38 @@ interface VenueRepository : JpaRepository<Venue, UUID>{
         @Param("offset") offset: Int
     ): List<Venue>
 
+    /**
+     * Find venues within a specific radius using Haversine formula
+     * @param lat Latitude of search center
+     * @param lng Longitude of search center
+     * @param radiusKm Search radius in kilometers
+     * @return List of venues within radius, ordered by distance
+     */
+    @Query(
+        nativeQuery = true,
+        value = """
+      SELECT v.*,
+        6371 * acos(
+          cos(radians(:lat)) *
+          cos(radians(v.lat)) *
+          cos(radians(v.lng) - radians(:lng)) +
+          sin(radians(:lat)) * sin(radians(v.lat))
+        ) AS distance
+      FROM venues v
+      WHERE 6371 * acos(
+          cos(radians(:lat)) *
+          cos(radians(v.lat)) *
+          cos(radians(v.lng) - radians(:lng)) +
+          sin(radians(:lat)) * sin(radians(v.lat))
+        ) <= :radiusKm
+      ORDER BY distance
+    """
+    )
+    fun findVenuesWithinRadius(
+        @Param("lat") lat: Double,
+        @Param("lng") lng: Double,
+        @Param("radiusKm") radiusKm: Double
+    ): List<Venue>
+
     fun findByNameContainingIgnoreCase(name: String, pageable: Pageable): Page<Venue>
 }

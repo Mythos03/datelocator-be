@@ -113,8 +113,41 @@ class VenueController(
     ): Page<VenueResponseDto> {
         logger.info("Searching venues with name: $name, page: $page, size: $size")
         val venues = venueService.searchVenuesByName(name, page, size)
-        return venues.map { venue -> 
+        return venues.map { venue ->
             venueMapper.toResponseDto(venue)
+        }
+    }
+
+    /**
+     * Search for nearby venues using hybrid local DB + Google Places approach
+     *
+     * Query Params:
+     * - lat: Latitude of search center (required)
+     * - lng: Longitude of search center (required)
+     * - radius: Search radius in meters (default: 5000)
+     * - types: Optional comma-separated Google Places type filters (e.g., "restaurant,cafe")
+     * - keycloakId: Optional user ID for attribution
+     */
+    @GetMapping("/nearby")
+    fun searchNearbyVenues(
+        @RequestParam lat: Double,
+        @RequestParam lng: Double,
+        @RequestParam(defaultValue = "5000") radius: Int,
+        @RequestParam(required = false) types: String?,
+        @RequestParam(required = false) keycloakId: String?
+    ): ResponseEntity<List<VenueResponseDto>> {
+        return try {
+            logger.info("Searching for nearby venues at ($lat, $lng) with radius $radius")
+
+            val venues = venueService.searchNearbyVenues(lat, lng, radius, types, keycloakId)
+            logger.info("Returning ${venues.size} nearby venues")
+
+            ResponseEntity.ok(venues)
+        } catch (e: Exception) {
+            logger.error("Failed to search nearby venues", e)
+            ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(emptyList())
         }
     }
 
