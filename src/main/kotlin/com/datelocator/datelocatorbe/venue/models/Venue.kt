@@ -19,27 +19,6 @@ data class Venue(
     val lat: Double,
     val lng: Double,
 
-    // Google Places additional fields
-    @Column(length = 500)
-    val formattedAddress: String? = null,
-
-    val formattedPhoneNumber: String? = null,
-
-    val website: String? = null,
-
-    @ElementCollection
-    @CollectionTable(name = "venue_types", joinColumns = [JoinColumn(name = "venue_id")])
-    @Column(name = "type")
-    val types: MutableList<String> = mutableListOf(),
-
-    val priceLevel: Int? = null,
-
-    val businessStatus: String? = null,
-
-    val googleRating: Double? = null,
-
-    val googleRatingsTotal: Int? = null,
-
     @OneToMany(mappedBy = "venue", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
     val reviews: MutableSet<Review> = mutableSetOf(),
 

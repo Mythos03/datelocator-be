@@ -30,6 +30,7 @@ class VenueMapper(
     /**
      * Convert GooglePlaceDto to Venue entity
      * Used when creating venues from Google Places API search results
+     * Only stores basic fields: googlePlacesId, name, lat, lng
      */
     fun fromGooglePlaceDto(googlePlaceDto: GooglePlaceDto, createdBy: User? = null): Venue {
         return Venue(
@@ -37,29 +38,8 @@ class VenueMapper(
             name = googlePlaceDto.name,
             lat = googlePlaceDto.lat,
             lng = googlePlaceDto.lng,
-            types = googlePlaceDto.types?.toMutableList() ?: mutableListOf(),
-            priceLevel = googlePlaceDto.priceLevel,
-            googleRating = googlePlaceDto.rating,
-            googleRatingsTotal = googlePlaceDto.userRatingsTotal,
             createdBy = createdBy,
             reviews = mutableSetOf()
-        )
-    }
-
-    /**
-     * Enrich existing Venue entity with Google Place Details
-     * Used when fetching detailed information from Google Places API
-     */
-    fun enrichFromGooglePlaceDetails(venue: Venue, details: GooglePlaceDetailsDto): Venue {
-        return venue.copy(
-            formattedAddress = details.formattedAddress,
-            formattedPhoneNumber = details.formattedPhoneNumber,
-            website = details.website,
-            types = details.types?.toMutableList() ?: venue.types,
-            priceLevel = details.priceLevel,
-            businessStatus = details.businessStatus,
-            googleRating = details.rating,
-            googleRatingsTotal = details.userRatingsTotal
         )
     }
 

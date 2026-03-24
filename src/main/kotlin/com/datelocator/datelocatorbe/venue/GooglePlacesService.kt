@@ -1,15 +1,14 @@
 package com.datelocator.datelocatorbe.venue
 
 import com.datelocator.datelocatorbe.config.GooglePlacesConfig
-import com.datelocator.datelocatorbe.venue.models.GooglePlaceDetailsDto
 import com.datelocator.datelocatorbe.venue.models.GooglePlaceDto
 import com.google.maps.GeoApiContext
-import com.google.maps.PlaceDetailsRequest
 import com.google.maps.PlacesApi
 import com.google.maps.model.LatLng
 import com.google.maps.model.PlaceType
 import com.google.maps.model.PlacesSearchResponse
 import jakarta.annotation.PostConstruct
+import jakarta.annotation.PreDestroy
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -38,11 +37,13 @@ class GooglePlacesService(
 
     /**
      * Search for nearby places using Google Places Nearby Search API
+     * Returns only basic information: placeId, name, lat, lng
+     *
      * @param lat Latitude
      * @param lng Longitude
      * @param radiusMeters Search radius in meters
      * @param type Optional place type filter
-     * @return List of GooglePlaceDto
+     * @return List of GooglePlaceDto with basic venue information
      */
     fun searchNearbyPlaces(
         lat: Double,
@@ -79,12 +80,7 @@ class GooglePlacesService(
                     placeId = result.placeId,
                     name = result.name,
                     lat = result.geometry.location.lat,
-                    lng = result.geometry.location.lng,
-                    rating = result.rating?.toDouble(),
-                    userRatingsTotal = result.userRatingsTotal,
-                    vicinity = result.vicinity,
-                    types = result.types?.map { it.toString() } ?: emptyList(),
-                    priceLevel = null  // Price level not available in nearby search
+                    lng = result.geometry.location.lng
                 )
             }
 
@@ -98,50 +94,9 @@ class GooglePlacesService(
     }
 
     /**
-     * Fetch place details with field masking to minimize API costs
-     * Only requests essential fields: name, formatted_address, formatted_phone_number,
-     * rating, user_ratings_total, geometry, website, types, price_level, business_status
-     *
-     * Note: Opening hours are NOT requested to comply with Google's caching restrictions
-     */
-    fun getPlaceDetails(placeId: String): GooglePlaceDetailsDto? {
-        if (!isConfigured()) {
-            logger.warn("Google Places API is not configured, cannot fetch place details")
-            return null
-        }
-
-        return try {
-            logger.info("Fetching place details for placeId: $placeId")
-
-            val request: PlaceDetailsRequest = PlacesApi.placeDetails(geoApiContext, placeId)
-            val result = request.await()
-
-            val details = GooglePlaceDetailsDto(
-                placeId = result.placeId,
-                name = result.name,
-                formattedAddress = result.formattedAddress,
-                formattedPhoneNumber = result.formattedPhoneNumber,
-                rating = result.rating?.toDouble(),
-                userRatingsTotal = result.userRatingsTotal,
-                lat = result.geometry.location.lat,
-                lng = result.geometry.location.lng,
-                website = result.website?.toString(),
-                types = result.types?.map { it.toString() } ?: emptyList(),
-                priceLevel = result.priceLevel?.ordinal,
-                businessStatus = result.businessStatus?.toString()
-            )
-
-            logger.info("Successfully fetched details for place: ${details.name}")
-            details
-        } catch (e: Exception) {
-            logger.error("Error fetching place details for placeId: $placeId", e)
-            null
-        }
-    }
-
-    /**
      * Shutdown the GeoApiContext when the service is destroyed
      */
+    @PreDestroy
     fun shutdown() {
         if (this::geoApiContext.isInitialized) {
             geoApiContext.shutdown()

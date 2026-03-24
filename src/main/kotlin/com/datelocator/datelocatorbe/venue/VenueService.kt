@@ -153,7 +153,6 @@ class VenueService(
         if (localVenues.size >= MIN_LOCAL_RESULTS_THRESHOLD) {
             logger.info("Sufficient local results found, returning local venues only")
             return localVenues.map { venue ->
-                getValidatedPreferences(venue)
                 venueMapper.toResponseDto(venue)
             }
         }
@@ -189,64 +188,7 @@ class VenueService(
         // Step 5: Merge and return results
         val allVenues = localVenues + newVenues
         return allVenues.map { venue ->
-            getValidatedPreferences(venue)
             venueMapper.toResponseDto(venue)
         }
-    }
-
-    /**
-     * Get venue details, fetching from Google Places API if needed
-     *
-     * This method implements cost-efficient caching:
-     * 1. Check if detailed info already exists in DB
-     * 2. If not, call Google Places API with field masking
-     * 3. Enrich and persist the details
-     * 4. Always return openingHours as null per requirements
-     *
-     * @param venueId Internal venue UUID or Google Place ID
-     * @return VenueResponseDto with detailed information
-     */
-    fun getVenueDetails(venueId: String): VenueResponseDto? {
-        logger.info("Fetching venue details for ID: $venueId")
-
-        // Try to parse as UUID first, otherwise treat as Google Place ID
-        val venue = try {
-            val uuid = UUID.fromString(venueId)
-            venueRepository.findById(uuid).orElse(null)
-        } catch (e: IllegalArgumentException) {
-            venueRepository.findVenueByGooglePlacesId(venueId)
-        }
-
-        if (venue == null) {
-            logger.warn("Venue not found for ID: $venueId")
-            return null
-        }
-
-        // Check if we need to enrich with Google Places data
-        val needsEnrichment = venue.formattedAddress == null && googlePlacesService.isConfigured()
-
-        val enrichedVenue = if (needsEnrichment) {
-            logger.info("Venue lacks details, fetching from Google Places API")
-            try {
-                val details = googlePlacesService.getPlaceDetails(venue.googlePlacesId)
-                if (details != null) {
-                    val updated = venueMapper.enrichFromGooglePlaceDetails(venue, details)
-                    venueRepository.save(updated)
-                    logger.info("Successfully enriched venue with Google Places details")
-                    updated
-                } else {
-                    logger.warn("Failed to fetch details from Google Places API")
-                    venue
-                }
-            } catch (e: Exception) {
-                logger.error("Error enriching venue with Google Places data", e)
-                venue
-            }
-        } else {
-            venue
-        }
-
-        getValidatedPreferences(enrichedVenue)
-        return venueMapper.toResponseDto(enrichedVenue)
     }
 }

@@ -151,30 +151,4 @@ class VenueController(
         }
     }
 
-    /**
-     * Get detailed venue information
-     * Fetches from Google Places API if details not already cached
-     *
-     * Path variable 'id' can be either:
-     * - Internal UUID
-     * - Google Place ID
-     */
-    @GetMapping("/details/{id}")
-    fun getVenueDetails(@PathVariable id: String): ResponseEntity<Any> {
-        return try {
-            logger.info("Fetching venue details for ID: $id")
-
-            val venue = venueService.getVenueDetails(id)
-                ?: return ResponseEntity.notFound().build()
-
-            logger.info("Successfully retrieved venue details for: ${venue.name}")
-            ResponseEntity.ok(venue)
-        } catch (e: Exception) {
-            logger.error("Failed to fetch venue details for ID: $id", e)
-            ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(mapOf("error" to e.message))
-        }
-    }
-
 }
