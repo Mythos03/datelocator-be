@@ -42,14 +42,14 @@ class GooglePlacesService(
      * @param lat Latitude
      * @param lng Longitude
      * @param radiusMeters Search radius in meters
-     * @param type Optional place type filter
+     * @param types Optional comma-separated place type filters (e.g., "restaurant,cafe")
      * @return List of GooglePlaceDto with basic venue information
      */
     fun searchNearbyPlaces(
         lat: Double,
         lng: Double,
         radiusMeters: Int = config.nearbySearchRadiusMeters,
-        type: String? = null
+        types: String? = null
     ): List<GooglePlaceDto> {
         if (!isConfigured()) {
             logger.warn("Google Places API is not configured, returning empty results")
@@ -63,14 +63,17 @@ class GooglePlacesService(
             var request = PlacesApi.nearbySearchQuery(geoApiContext, location)
                 .radius(radiusMeters)
 
-            // Apply type filter if provided
-            if (type != null) {
-                try {
-                    val placeType = PlaceType.valueOf(type.uppercase())
-                    request = request.type(placeType)
-                    logger.debug("Applied place type filter: $type")
-                } catch (e: IllegalArgumentException) {
-                    logger.warn("Invalid place type: $type, searching without type filter")
+            // Apply type filters if provided (comma-separated)
+            if (!types.isNullOrBlank()) {
+                val typeList = types.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+                typeList.forEach { typeStr ->
+                    try {
+                        val placeType = PlaceType.valueOf(typeStr.uppercase())
+                        request = request.type(placeType)
+                        logger.debug("Applied place type filter: $typeStr")
+                    } catch (e: IllegalArgumentException) {
+                        logger.warn("Invalid place type: $typeStr, skipping")
+                    }
                 }
             }
 

@@ -25,7 +25,7 @@ class VenueService(
 
     companion object {
         const val DEFAULT_VOTE_THRESHOLD = 1
-        const val MIN_LOCAL_RESULTS_THRESHOLD = 5
+        const val MIN_LOCAL_RESULTS_THRESHOLD = 0  // Set to 0 for development to always query Google Places
     }
 
     fun createVenue(venueRequestDto: VenueRequestDto): Venue {
@@ -129,7 +129,7 @@ class VenueService(
      * @param lat Latitude of search center
      * @param lng Longitude of search center
      * @param radiusMeters Search radius in meters
-     * @param type Optional Google Places type filter
+     * @param types Optional comma-separated Google Places type filters (e.g., "restaurant,cafe")
      * @param keycloakId Optional user ID for attribution
      * @return List of VenueResponseDto with combined local + Google results
      */
@@ -137,7 +137,7 @@ class VenueService(
         lat: Double,
         lng: Double,
         radiusMeters: Int,
-        type: String? = null,
+        types: String? = null,
         keycloakId: String? = null
     ): List<VenueResponseDto> {
         logger.info("Searching for nearby venues at ($lat, $lng) with radius $radiusMeters meters")
@@ -160,7 +160,7 @@ class VenueService(
         // Step 3: Query Google Places API if configured
         val googlePlaces = if (googlePlacesService.isConfigured()) {
             logger.info("Insufficient local results, querying Google Places API")
-            googlePlacesService.searchNearbyPlaces(lat, lng, radiusMeters, type)
+            googlePlacesService.searchNearbyPlaces(lat, lng, radiusMeters, types)
         } else {
             logger.warn("Google Places API not configured, cannot fetch additional venues")
             emptyList()

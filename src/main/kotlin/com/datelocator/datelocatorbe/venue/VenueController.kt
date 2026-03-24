@@ -125,7 +125,7 @@ class VenueController(
      * - lat: Latitude of search center (required)
      * - lng: Longitude of search center (required)
      * - radius: Search radius in meters (default: 5000)
-     * - type: Optional Google Places type filter (e.g., "restaurant", "cafe")
+     * - types: Optional comma-separated Google Places type filters (e.g., "restaurant,cafe")
      * - keycloakId: Optional user ID for attribution
      */
     @GetMapping("/nearby")
@@ -133,13 +133,13 @@ class VenueController(
         @RequestParam lat: Double,
         @RequestParam lng: Double,
         @RequestParam(defaultValue = "5000") radius: Int,
-        @RequestParam(required = false) type: String?,
+        @RequestParam(required = false) types: String?,
         @RequestParam(required = false) keycloakId: String?
     ): ResponseEntity<List<VenueResponseDto>> {
         return try {
             logger.info("Searching for nearby venues at ($lat, $lng) with radius $radius")
 
-            val venues = venueService.searchNearbyVenues(lat, lng, radius, type, keycloakId)
+            val venues = venueService.searchNearbyVenues(lat, lng, radius, types, keycloakId)
             logger.info("Returning ${venues.size} nearby venues")
 
             ResponseEntity.ok(venues)
